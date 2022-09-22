@@ -9,6 +9,8 @@ export default function Home() {
   const [currency, setCurrency] = useState(false)
   const [amount, setAmount] = useState(10)
   const [duration, setDuration] = useState(1)
+  const [activePairId, setActivePairId] = useState("BTC/USDT")
+  const [activePairIcon, setActivePairIcon] = useState("https://platform.binarystars.cc/icons/btc.svg")
 
   return (
     <div className='home h-screen'>
@@ -22,8 +24,8 @@ export default function Home() {
             <div className="currency relative sm:w-[280px] w-full mb-3 sm:mb-0">
               <div className="justify-between items-center py-1 px-4 rounded-md bg-primary-dark-600 border border-gray-700" onClick={() => { setCurrency(!currency) }}>
                 <div className="flex items-center justify-between gap-3 xs:gap-1" id="ticker-selector">
-                  <img alt="btclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/btc.svg" />
-                  <div className="font-semibold sm:mr-2 text-white">BTC/USDT</div>
+                  <img alt="btclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src={activePairIcon} />
+                  <div className="font-semibold sm:mr-2 text-white">{activePairId}</div>
                   <div className="flex flex-row justify-between px-2">
                     <div className="flex h-full w-full items-center justify-center  rounded-md py-1 font-semibold text-lg px-2" style={{ background: 'rgba(255, 255, 255, 0.8)', color: 'black', boxShadow: 'rgba(255, 255, 255, 0.8) 0px 0px 10px' }}>42%</div>
                   </div>
@@ -35,7 +37,7 @@ export default function Home() {
                 <div className="absolute top-full left-0 z-50 mt-3 sm:w-[330px] rounded-md focus:outline-none" id="headlessui-popover-panel-6">
                   <div className="cursor-pointer select-none rounded-md bg-primary-dark-700
                       p-2">
-                    <div className="flex w-full flex-row gap-2">
+                    {/* <div className="flex w-full flex-row gap-2">
                       <div className="bg-primary-dark-700 group flex h-auto w-full flex-col
                           items-center rounded-md p-4 transition-colors duration-300
                           hover:bg-primary-dark-400">
@@ -47,74 +49,132 @@ export default function Home() {
 
                         <div className="mt-2 text-gray-300">Candles</div>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-3">
                       <div id="btc" className="bg-primary-dark-600 m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                        text-gray-100 transition-colors duration-300
+                        hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                        onClick={ () => {
+                            setActivePairId("BTC/USDT")
+                            setActivePairIcon("https://platform.binarystars.cc/icons/btc.svg")
+                          }
+                        }
+                      >
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="btclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/btc.svg" /></div>
                         <div className="mr-1">BTC/USDT</div>
                       </div>
                       <div id="eth" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          onClick={ () => {
+                              setActivePairId("ETH/USDT")
+                              setActivePairIcon("https://platform.binarystars.cc/icons/eth.svg")
+                            }
+                          }
+                        >
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="ethlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/eth.svg" /></div>
                         <div className="mr-1">ETH/USDT</div>
                       </div>
                       <div id="etc" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          onClick={ () => {
+                              setActivePairId("ETC/USDT")
+                              setActivePairIcon("https://platform.binarystars.cc/icons/etc.svg")
+                            }
+                          }
+                        >
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="etclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/etc.svg" /></div>
                         <div className="mr-1">ETC/USDT</div>
                       </div>
                       <div id="ltc" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          onClick={ () => {
+                              setActivePairId("LTC/USDT")
+                              setActivePairIcon("https://platform.binarystars.cc/icons/ltc.svg")
+                            }
+                          }
+                        >
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="ltclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/ltc.svg" /></div>
                         <div className="mr-1">LTC/USDT</div>
                       </div>
                       <div id="bch" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          onClick={ () => {
+                              setActivePairId("BCH/USDT")
+                              setActivePairIcon("https://platform.binarystars.cc/icons/bch.svg")
+                            }
+                          }
+                        >
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="bchlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/bch.svg" /></div>
                         <div className="mr-1">BCH/USDT</div>
                       </div>
                       <div id="xmr" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"         
+                          onClick={ () => {
+                            setActivePairId("XMR/USDT")
+                            setActivePairIcon("https://platform.binarystars.cc/icons/xmr.svg")
+                          }
+                        }>
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="xmrlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/xmr.svg" /></div>
                         <div className="mr-1">XMR/USDT</div>
                       </div>
                       <div id="eos" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"                          
+                          onClick={ () => {
+                            setActivePairId("EOS/USDT")
+                            setActivePairIcon("https://platform.binarystars.cc/icons/eos.svg")
+                          }
+                        }
+                      >
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="eoslogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/eos.svg" /></div>
                         <div className="mr-1">EOS/USDT</div>
                       </div>
                       <div id="bnb" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"                       
+                          onClick={ () => {
+                            setActivePairId("BNB/USDT")
+                            setActivePairIcon("https://platform.binarystars.cc/icons/bnb.svg")
+                          }
+                        }>
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="bnblogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/bnb.svg" /></div>
                         <div className="mr-1">BNB/USDT</div>
                       </div>
                       <div id="xrp" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"                 
+                          onClick={ () => {
+                            setActivePairId("XRP/USDT")
+                            setActivePairIcon("https://platform.binarystars.cc/icons/xrp.svg")
+                          }
+                        }
+                      >
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="xrplogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/xrp.svg" /></div>
                         <div className="mr-1">XRP/USDT</div>
                       </div>
                       <div id="ada" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2">
+                          hover:bg-primary-dark-600 md:text-lg xs:p-2"             
+                          onClick={ () => {
+                            setActivePairId("ADA/USDT")
+                            setActivePairIcon("https://platform.binarystars.cc/icons/ada.svg")
+                          }
+                        }
+                      >
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="adalogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/ada.svg" /></div>
                         <div className="mr-1">ADA/USDT</div>
@@ -221,7 +281,7 @@ export default function Home() {
                 </div>
                 <div className="-mb-1 flex justify-center px-2 text-sm text-gray-100 md:w-full md:text-lg">+$0.42</div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 <div className="form-group relative my-2">
                   <button className='absolute -top-[11px] left-[12px] z-50 text-white text-[40px]' onClick={() => { setDuration(parseInt(duration) - 1); if (duration === 1) { setDuration(1) } }} >-</button>
