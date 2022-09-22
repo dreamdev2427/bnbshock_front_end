@@ -1,11 +1,15 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { NotificationContainer } from "react-notifications";
+import { store } from "./store";
 import AppRoutes from "./routes";
 import "./assets/css/app.css";
 import "./assets/css/style.scss";
 import "animate.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import "react-notifications/lib/notifications.css";
 
 import smoothScrollPolyfill from "smoothscroll-polyfill";
 
@@ -21,14 +25,15 @@ function Index() {
   return (
     <div>
       <AppRoutes />
+      <NotificationContainer />
     </div>
   );
 }
 export default Index;
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <Index />
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById("root")
 );

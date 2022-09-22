@@ -10,7 +10,6 @@ export default function Home() {
   const [amount, setAmount] = useState(10)
   const [duration, setDuration] = useState(1)
 
-
   return (
     <div className='home h-screen'>
       {/* sidebar */}
@@ -152,9 +151,7 @@ export default function Home() {
                   </div>
                 </div>
               </> : ''}
-
             </div>
-
           </div>
           <div className="flex flex-wrap pt-8">
             <div className="chart md:w-10/12 w-full">
@@ -224,6 +221,7 @@ export default function Home() {
                 </div>
                 <div className="-mb-1 flex justify-center px-2 text-sm text-gray-100 md:w-full md:text-lg">+$0.42</div>
               </div>
+              
               <div className="grid grid-cols-2 gap-3">
                 <div className="form-group relative my-2">
                   <button className='absolute -top-[11px] left-[12px] z-50 text-white text-[40px]' onClick={() => { setDuration(parseInt(duration) - 1); if (duration === 1) { setDuration(1) } }} >-</button>
