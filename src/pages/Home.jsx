@@ -57,6 +57,7 @@ export default function Home() {
                         onClick={ () => {
                             setActivePairId("BTC/USDT")
                             setActivePairIcon("https://platform.binarystars.cc/icons/btc.svg")
+                            setCurrency(!currency)
                           }
                         }
                       >
@@ -70,6 +71,7 @@ export default function Home() {
                           onClick={ () => {
                               setActivePairId("ETH/USDT")
                               setActivePairIcon("https://platform.binarystars.cc/icons/eth.svg")
+                              setCurrency(!currency)
                             }
                           }
                         >
@@ -83,6 +85,7 @@ export default function Home() {
                           onClick={ () => {
                               setActivePairId("ETC/USDT")
                               setActivePairIcon("https://platform.binarystars.cc/icons/etc.svg")
+                              setCurrency(!currency)
                             }
                           }
                         >
@@ -96,6 +99,7 @@ export default function Home() {
                           onClick={ () => {
                               setActivePairId("LTC/USDT")
                               setActivePairIcon("https://platform.binarystars.cc/icons/ltc.svg")
+                              setCurrency(!currency)
                             }
                           }
                         >
@@ -109,6 +113,7 @@ export default function Home() {
                           onClick={ () => {
                               setActivePairId("BCH/USDT")
                               setActivePairIcon("https://platform.binarystars.cc/icons/bch.svg")
+                              setCurrency(!currency)
                             }
                           }
                         >
@@ -122,6 +127,7 @@ export default function Home() {
                           onClick={ () => {
                             setActivePairId("XMR/USDT")
                             setActivePairIcon("https://platform.binarystars.cc/icons/xmr.svg")
+                            setCurrency(!currency)
                           }
                         }>
                         <div className="mr-2 mt-0.5
@@ -134,6 +140,7 @@ export default function Home() {
                           onClick={ () => {
                             setActivePairId("EOS/USDT")
                             setActivePairIcon("https://platform.binarystars.cc/icons/eos.svg")
+                            setCurrency(!currency)
                           }
                         }
                       >
@@ -147,6 +154,7 @@ export default function Home() {
                           onClick={ () => {
                             setActivePairId("BNB/USDT")
                             setActivePairIcon("https://platform.binarystars.cc/icons/bnb.svg")
+                            setCurrency(!currency)
                           }
                         }>
                         <div className="mr-2 mt-0.5
@@ -159,6 +167,7 @@ export default function Home() {
                           onClick={ () => {
                             setActivePairId("XRP/USDT")
                             setActivePairIcon("https://platform.binarystars.cc/icons/xrp.svg")
+                            setCurrency(!currency)
                           }
                         }
                       >
@@ -172,6 +181,7 @@ export default function Home() {
                           onClick={ () => {
                             setActivePairId("ADA/USDT")
                             setActivePairIcon("https://platform.binarystars.cc/icons/ada.svg")
+                            setCurrency(!currency)
                           }
                         }
                       >
