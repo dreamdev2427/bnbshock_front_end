@@ -3,10 +3,8 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 import { NotificationManager } from 'react-notifications';
 import axios from "axios";
-import SideBar from '../components/SideBar'
-import Chart from '../components/Chart'
-import StockChart from '../components/StockChart'
-import { useDispatch, useSelector } from 'react-redux'
+import SideBar from '../components/SideBar';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateConsideringPair, updateGlobalWeb3, setConnectedChainId, setConnectedWalletAddress } from '../store/actions/auth.actions'
 import { 
   PLATFORM_CONTRACT_ADDRESS ,
@@ -15,7 +13,8 @@ import {
   ETHEREUM_CHAIN_ID,
   POLYGON_RPC_URL,
   POLYGON_CHAIN_ID,
-  CHAINS
+  CHAINS,
+  SCREENER_PAIR_LINKS
 } from '../config';
 const platformABI = require("../assets/abi/platform.json");
 
@@ -107,7 +106,7 @@ export default function Home() {
       let binanceResponse = await axios.get("https://api.binance.com/api/v3/ticker/price");
       let currentPrices = binanceResponse?.data? binanceResponse.data : [];
       let pairPrice = currentPrices.find((item) => item.symbol === activePairId.replace("/", ""))?.price || 0;
-      let vettingPeriod = 0;
+      let vettingPeriod = 0, vettingAmount = 0;
       switch(duration)
       {
         default: break;
@@ -117,12 +116,15 @@ export default function Home() {
         case "100sec": vettingPeriod=100; break;
       }      
       pairPrice = globalWeb3.utils.toWei(pairPrice.toString(), "ether");
+      vettingAmount = globalWeb3.utils.toWei(amount.toString(), "ether");
       let funcTrx = gameContract.methods.enterVetting(activePairId.replace("/", ""), pairPrice, vettingPeriod, upOrdown, referralWallet);
       await funcTrx.estimateGas({
-        from: wallet
+        from: wallet,
+        value: vettingAmount
       });
       await funcTrx.send({
         from: wallet,
+        value: vettingAmount,
         gasPrice: 30 * (10 ** 9)
       }).then((data) => {
         console.log("buyTickets return event : ", data.events.TicketsBought.returnValues);
@@ -397,14 +399,14 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"         
                           onClick={ () => {
-                            setActivePairId("XMR/USDT")
+                            setActivePairId("XMR/WETH")
                             setActivePairIcon("https://platform.binarystars.cc/icons/xmr.svg")
                             setCurrency(!currency)
                           }
                         }>
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="xmrlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/xmr.svg" /></div>
-                        <div className="mr-1">XMR/USDT</div>
+                        <div className="mr-1">XMR/WETH</div>
                       </div>
                       <div id="eos" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
@@ -424,14 +426,14 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"                       
                           onClick={ () => {
-                            setActivePairId("BNB/USDT")
+                            setActivePairId("BNB/BUSD")
                             setActivePairIcon("https://platform.binarystars.cc/icons/bnb.svg")
                             setCurrency(!currency)
                           }
                         }>
                         <div className="mr-2 mt-0.5
                             -ml-2"><img alt="bnblogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/bnb.svg" /></div>
-                        <div className="mr-1">BNB/USDT</div>
+                        <div className="mr-1">BNB/BUSD</div>
                       </div>
                       <div id="xrp" className="m-1 flex w-auto flex-row rounded-lg p-1
                           text-gray-100 transition-colors duration-300
@@ -469,7 +471,13 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap pt-8">
             <div className="chart md:w-10/12 w-full">
-              <Chart currentPairId={activePairId.replace("/", "")}/>
+              <iframe 
+                id="Iframe"
+                title="Charts from Dexscreener" 
+                scrolling="no" 
+                src={`https://dexscreener.com/${SCREENER_PAIR_LINKS[activePairId]}?embed=1&theme=dark&trades=0&info=0`} 
+                className="fit" style={{ width: "75vw", height: "90vh", display: "block" }} >           
+              </iframe>
             </div>
             <div className="sm:block hidden md:w-2/12 w-full">
               <button id="call-button" className="mb-12 bg-[#7064e9] hover:bg-[#7d72ed] flex select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-70 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 h-14 md:text-xl"
