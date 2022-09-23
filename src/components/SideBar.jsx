@@ -10,7 +10,7 @@ export default function SideBar() {
 
     const chainId = useSelector(state => state.auth.currentChainId);
     const account = useSelector(state => state.auth.currentWallet);
-    const globalWeb3 = useSelector((state) => state.auth.globalWeb3);
+    const globalWeb3 = useSelector(state => state.auth.globalWeb3);
 
     const [menu, setMenu] = useState(false);
     const [tab, setTab] = useState('name');
