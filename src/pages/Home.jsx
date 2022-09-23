@@ -512,7 +512,7 @@ export default function Home() {
                 <input type="text" className='w-full py-2 pt-7 px-3 h-[65px] leading-[75px] rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen' onChange={(e) => { setDuration(parseInt(e.target.value)) }} value={duration + 'min'} />
                 <label className='absolute top-[7px] left-[12px] text-gray-700 text-md'>Duration</label>
               </div> */}
-              <div className="flex space-x-1 rounded-xl bg-primary-dark-600 py-2 my-4" role="tablist" aria-orientation="horizontal">
+              <div className="flex space-x-1 rounded-md bg-primary-dark-600 py-2 my-4" role="tablist" aria-orientation="horizontal">
                   <button className={duration === '10sec' ? "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 bg-primary-dark-500 shadow" : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow" } id="headlessui-tabs-tab-27" role="tab" type="button" aria-selected="true" tabIndex="0" aria-controls="headlessui-tabs-panel-30" onClick={() => { setDuration('10sec') }}>10sec</button>
                   <button className={duration === '30sec' ? "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 bg-primary-dark-500 shadow" : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow" } id="headlessui-tabs-tab-28" role="tab" type="button" aria-selected="false" tabIndex="-1" onClick={() => { setDuration('30sec') }}>30sec</button>
                   <button className={duration === '60sec' ? "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 bg-primary-dark-500 shadow" : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow" } role="tab" type="button" aria-selected="false" tabIndex="-1" onClick={() =>{ setDuration('60sec') }}>60sec</button>
@@ -551,16 +551,16 @@ export default function Home() {
                 </div>
               </div>
               <div className="hidden md:block row-span-1 w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 mt-3">
-                <div className="flex justify-center align-middle text-sm text-gray-600 md:text-base">Profitability:
-                  <code className="pl-1 font-medium text-slate-400 md:pt-0.5 md:font-semibold">{WINING_PERCENTS_PER_TIMEFRAME[duration]}%</code>
+                <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">Profitability:
+                  <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">{WINING_PERCENTS_PER_TIMEFRAME[duration]}%</code>
                 </div>
                 {/* <div className="-mb-1 flex justify-center px-2 text-sm text-gray-100 md:w-full md:text-lg">+$0.42</div> */}
               </div>
             </div>
             <div className='block sm:hidden fixed left-0 bottom-12 w-full bg-black min-h-[30px] px-3 pb-2'>
               <div className="md:hidden row-span-1 flex w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 pt-1">
-              <div className="flex justify-center align-middle text-sm text-gray-600 md:text-base">
-                Profitability: <code className="pl-1 font-medium text-slate-400 md:pt-0.5 md:font-semibold">{WINING_PERCENTS_PER_TIMEFRAME[duration]}%</code>
+              <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">
+                Profitability: <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">{WINING_PERCENTS_PER_TIMEFRAME[duration]}%</code>
                 </div>
                 {/* <div className="-mb-1 flex justify-center px-2 text-sm text-gray-100 md:w-full md:text-lg">+$0.42</div> */}
               </div>
