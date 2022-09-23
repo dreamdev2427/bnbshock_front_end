@@ -476,10 +476,10 @@ export default function Home() {
                 title="Charts from Dexscreener" 
                 scrolling="no" 
                 src={`https://dexscreener.com/${SCREENER_PAIR_LINKS[activePairId]}?embed=1&theme=dark&trades=0&info=0`} 
-                className="fit" style={{ width: "75vw", height: "90vh", display: "block" }} >           
+                className="fit" style={{ width: "100%", height: "90vh", display: "block" }} >           
               </iframe>
             </div>
-            <div className="sm:block hidden md:w-2/12 w-full">
+            <div className="sm:block hidden md:w-2/12 w-full pl-3">
               <button id="call-button" className="mb-12 bg-[#7064e9] hover:bg-[#7d72ed] flex select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-70 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 h-14 md:text-xl"
                 style={{ width:"100%", textAlign: "center"}}
                   onClick = {() => {connected === true? onClickDisconnect() : onClickConnect()}}
@@ -512,7 +512,7 @@ export default function Home() {
                 <input type="text" className='w-full py-2 pt-7 px-3 h-[65px] leading-[75px] rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen' onChange={(e) => { setDuration(parseInt(e.target.value)) }} value={duration + 'min'} />
                 <label className='absolute top-[7px] left-[12px] text-gray-700 text-md'>Duration</label>
               </div> */}
-              <div className="flex space-x-1 rounded-xl bg-primary-dark-600 py-2 mb-4" role="tablist" aria-orientation="horizontal">
+              <div className="flex space-x-1 rounded-xl bg-primary-dark-600 py-2 my-4" role="tablist" aria-orientation="horizontal">
                   <button className={duration === '10sec' ? "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 bg-primary-dark-500 shadow" : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow" } id="headlessui-tabs-tab-27" role="tab" type="button" aria-selected="true" tabindex="0" aria-controls="headlessui-tabs-panel-30" onClick={() => { setDuration('10sec') }}>10sec</button>
                   <button className={duration === '30sec' ? "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 bg-primary-dark-500 shadow" : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow" } id="headlessui-tabs-tab-28" role="tab" type="button" aria-selected="false" tabindex="-1" onClick={() => { setDuration('30sec') }}>30sec</button>
                   <button className={duration === '60sec' ? "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 bg-primary-dark-500 shadow" : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow" } role="tab" type="button" aria-selected="false" tabindex="-1" onClick={() =>{ setDuration('60sec') }}>60sec</button>
