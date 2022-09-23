@@ -8,8 +8,8 @@ const GamePlatform = require("../assets/abi/platform.json");
 
 export default function SideBar() {
 
-    const chainId = useSelector((state) => state.auth.currentChainId);
-    const account = useSelector((state) => state.auth.currentWallet);
+    const chainId = useSelector(state => state.auth.currentChainId);
+    const account = useSelector(state => state.auth.currentWallet);
     const globalWeb3 = useSelector((state) => state.auth.globalWeb3);
 
     const [menu, setMenu] = useState(false);
@@ -17,7 +17,7 @@ export default function SideBar() {
     const [isCopied, setIsCopied] = React.useState(false);
     const [awardAmount, setAwardAmount] = useState(0);
     const [referredCounts, setReferredCounts] = useState(0);
-
+   
     const onCopyText = () => {
       setIsCopied(true);
       setTimeout(() => {
