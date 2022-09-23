@@ -1,14 +1,24 @@
 import React from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import TradeViewChart from "react-crypto-chart";
 
 export const Chart = ({currentPairId}) => {
 
+  const [ flag, setFlag ] = useState(false);
+  console.log("currentPairId = ", currentPairId);
+
+  useEffect(() => {
+    console.log("here");
+    setFlag(!flag);
+  }, [currentPairId])
+
   return (
-    <div>
+    <div >
     {
       currentPairId === "BTCUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -56,7 +66,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "ETCUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -104,7 +114,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "BCHUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -152,7 +162,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "EOSUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -200,7 +210,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "XRPUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -248,7 +258,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "ETHUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -296,7 +306,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "LTCUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -344,7 +354,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "XMRUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -393,7 +403,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "BNBUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
@@ -441,7 +451,7 @@ export const Chart = ({currentPairId}) => {
     { 
       currentPairId === "ADAUSDT" && 
       <TradeViewChart
-      interval="1m"
+      interval="2m"
       containerStyle={{
         minHeight: "85vh",
         minWidth: "70vw",
