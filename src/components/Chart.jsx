@@ -1,18 +1,7 @@
 import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import TradeViewChart from "react-crypto-chart";
-import { useSelector } from 'react-redux';
 
 export const Chart = ({currentPairId}) => {
-
-  const [ flag, setFlag ] = useState(false);
-  console.log("currentPairId = ", currentPairId);
-
-  useEffect(() => {
-    console.log("here");
-    setFlag(!flag);
-  }, [currentPairId])
 
   return (
     <div>
