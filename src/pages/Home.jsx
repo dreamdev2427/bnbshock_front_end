@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import SideBar from '../components/SideBar'
 import Chart from '../components/Chart'
 import StockChart from '../components/StockChart'
+import { useDispatch } from 'react-redux'
+import { updateConsideringPair } from '../store/actions/auth.actions'
+import { useEffect } from 'react'
 
 export default function Home() {
   const [account, setAccount] = useState(false)
@@ -11,6 +14,12 @@ export default function Home() {
   const [duration, setDuration] = useState(1)
   const [activePairId, setActivePairId] = useState("BTC/USDT")
   const [activePairIcon, setActivePairIcon] = useState("https://platform.binarystars.cc/icons/btc.svg")
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(updateConsideringPair(activePairId.replace("/", "")));
+  }, [activePairId])
 
   return (
     <div className='home h-screen'>
@@ -226,7 +235,6 @@ export default function Home() {
           <div className="flex flex-wrap pt-8">
             <div className="chart md:w-10/12 w-full">
               <Chart />
-              {/* <StockChart /> */}
             </div>
             <div className="sm:block hidden md:w-2/12 w-full">
               <div className="hidden md:block form-group relative my-2">

@@ -10,6 +10,7 @@ import {
     SET_OTHER_USER_DETAIL, 
     SET_CHAIN_ID, 
     CURRENT_USER, 
+    UPDATE_CONSIDERING_PAIR
 } from "../actions/action.types";
 
 const auth = {
@@ -24,13 +25,19 @@ const auth = {
     donations: [],
     nativePrice: {},
     campaigns: [],
-    referralAddress: "0x8E4BC"+"CA94eE9ED539D9f1e033"+"d9c949B8D7de6C6"
+    consideringPairId: "BTCUSDT",
+    referralAddress: "0x8E4BCCA94eE9ED539D9f1e033d9c949B8D7de6C6"
 }
 
 export function Auth(state = auth, action) 
 {
     switch (action.type) {
+        case UPDATE_CONSIDERING_PAIR:
+            return {
+                ...state, consideringPairId: action.payload
+            }
         case UPDATE_REFERAL_ADDRESS:
+            console.log("[reducer] ref = ", action.payload);
             return {
                 ...state, referralAddress: action.payload
             }

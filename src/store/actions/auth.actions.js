@@ -8,6 +8,7 @@ import {
     SET_WALLET_ADDR, 
     CURRENT_USER, 
     UPDATE_REFERAL_ADDRESS, 
+    UPDATE_CONSIDERING_PAIR
 } from "./action.types"
 
 export const authSet = (payload) => dispatch => {
@@ -76,3 +77,9 @@ export const updateReferalAddress = (addr) => dispatch => {
     })
 }
 
+export const updateConsideringPair = (pairStr) => dispatch => {
+    dispatch({
+        type: UPDATE_CONSIDERING_PAIR,
+        payload: pairStr
+    })
+}

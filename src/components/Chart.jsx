@@ -1,84 +1,62 @@
-import React, { Component } from 'react';
-import CanvasJSReact from './canvasjs.react';
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+import React from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import TradeViewChart from "react-crypto-chart";
+import { useSelector } from 'react-redux';
 
-var dps = [
-  { x: 1, y: 10 },
-  { x: 2, y: 13 },
-  { x: 3, y: 18 },
-  { x: 4, y: 20 },
-  { x: 5, y: 17 },
-  { x: 6, y: 10 },
-  { x: 7, y: 13 },
-  { x: 8, y: 18 },
-  { x: 9, y: 20 },
-  { x: 10, y: 17 },
-  { x: 11, y: 10 },
-  { x: 12, y: 13 },
-  { x: 13, y: 18 },
-  { x: 14, y: 20 },
-  { x: 15, y: 17 },
-  { x: 16, y: 10 },
-  { x: 17, y: 13 },
-  { x: 18, y: 18 },
-  { x: 19, y: 20 },
-  { x: 20, y: 17 },
-]; //dataPoints.
-var xVal = dps.length;
-var yVal = 15;
-var updateInterval = 1000;
+export const Chart = () => {
 
+  const currentPairId = useSelector(state => state.auth.consideringPairId);
 
-export class Chart extends Component {
-    constructor() {
-        super();
-        this.updateChart = this.updateChart.bind(this);
-      }
-      componentDidMount() {
-        setInterval(this.updateChart, updateInterval);
-      }
-      updateChart() {
-        yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
-        dps.push({ x: xVal, y: yVal });
-        xVal++;
-        if (dps.length > 20) {
-          dps.shift();
+  console.log("currentPairId = ", currentPairId);
+
+  return (
+    <TradeViewChart
+      interval="1m"
+      containerStyle={{
+        minHeight: "85vh",
+        minWidth: "70vw",
+        marginBottom: "30px"
+      }}
+      chartLayout={{
+        layout: {
+          backgroundColor: "transparent",
+          textColor: "white"
+        },
+        grid: {
+          vertLines: {
+            color: "black"
+            // style: LineStyle.SparseDotted,
+          },
+          horzLines: {
+            color: "black"
+            // style: LineStyle.SparseDotted,
+          }
+        },
+        priceScale: {
+          borderColor: "#485c7b"
+        },
+        timeScale: {
+          borderColor: "#485c7b",
+          timeVisible: true,
+          secondsVisible: false
         }
-        this.chart.render();
-      }
-      render() {
-        const options = {
-            backgroundColor: "transparent",
-            // height: 580,
-            zoomEnabled:true,
-            risingColor: "#51ff0d", 
-            title: {
-                text: '',
-            },
-            axisX:{
-                labelFontColor: "white",
-                tickLength: 0
-            },
-            axisY:{
-                labelFontColor: "white",
-                tickLength: 0
-            },
-            data: [
-                {
-                type: 'area',
-                lineColor: "#51ff0d",
-                fillOpacity: .1,
-                dataPoints: dps,
-                },
-            ],
-        };
-        return (
-          <div>
-            <CanvasJSChart options={options} onRef={(ref) => (this.chart = ref)} />
-            {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
-          </div>
-        );
-      }
+      }}
+      histogramConfig={{
+        base: 0,
+        lineWidth: 2,
+        priceFormat: {
+            type: "volume",
+        },
+        overlay: true,
+        scaleMargins: {
+            top: 0.8,
+            bottom: 0,
+        },
+      }}
+      pair={currentPairId}
+    />
+  );
 }
 
 export default Chart
