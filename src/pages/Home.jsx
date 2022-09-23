@@ -234,7 +234,7 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap pt-8">
             <div className="chart md:w-10/12 w-full">
-              <Chart />
+              <Chart currentPairId={activePairId.replace("/", "")}/>
             </div>
             <div className="sm:block hidden md:w-2/12 w-full">
               <div className="hidden md:block form-group relative my-2">

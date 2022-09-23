@@ -4,9 +4,7 @@ import { useEffect } from 'react';
 import TradeViewChart from "react-crypto-chart";
 import { useSelector } from 'react-redux';
 
-export const Chart = () => {
-
-  const currentPairId = useSelector(state => state.auth.consideringPairId);
+export const Chart = ({currentPairId}) => {
 
   console.log("currentPairId = ", currentPairId);
 
