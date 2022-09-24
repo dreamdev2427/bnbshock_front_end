@@ -36,7 +36,7 @@ export default function Home() {
   const [amount, setAmount] = useState(10);
   const [duration, setDuration] = useState("30sec");
   const [activePairId, setActivePairId] = useState("BTC/USDT");
-  const [activePairIcon, setActivePairIcon] = useState("https://platform.binarystars.cc/icons/btc.svg");
+  const [activePairIcon, setActivePairIcon] = useState("/images/btc.svg");
   const [compressedAddress, setCompressedAddress] = useState("");
   const [connected, setConnected] = useState(false);
   const [web3Provider, setWeb3Provider] = useState({});
@@ -330,13 +330,13 @@ export default function Home() {
                         hover:bg-primary-dark-600 md:text-lg xs:p-2"
                         onClick={ () => {
                             setActivePairId("BTC/USDT")
-                            setActivePairIcon("https://platform.binarystars.cc/icons/btc.svg")
+                            setActivePairIcon("/images/btc.svg")
                             setCurrency(!currency)
                           }
                         }
                       >
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="btclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/btc.svg" /></div>
+                            -ml-2"><img alt="btclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/btc.svg" /></div>
                         <div className="mr-1">BTC/USDT</div>
                       </div>
                       <div id="eth" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -344,13 +344,13 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={ () => {
                               setActivePairId("ETH/USDT")
-                              setActivePairIcon("https://platform.binarystars.cc/icons/eth.svg")
+                              setActivePairIcon("/images/eth.svg")
                               setCurrency(!currency)
                             }
                           }
                         >
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="ethlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/eth.svg" /></div>
+                            -ml-2"><img alt="ethlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/eth.svg" /></div>
                         <div className="mr-1">ETH/USDT</div>
                       </div>
                       <div id="etc" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -358,13 +358,13 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={ () => {
                               setActivePairId("ETC/USDT")
-                              setActivePairIcon("https://platform.binarystars.cc/icons/etc.svg")
+                              setActivePairIcon("/images/etc.svg")
                               setCurrency(!currency)
                             }
                           }
                         >
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="etclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/etc.svg" /></div>
+                            -ml-2"><img alt="etclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/etc.svg" /></div>
                         <div className="mr-1">ETC/USDT</div>
                       </div>
                       <div id="ltc" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -372,13 +372,13 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={ () => {
                               setActivePairId("LTC/USDT")
-                              setActivePairIcon("https://platform.binarystars.cc/icons/ltc.svg")
+                              setActivePairIcon("/images/ltc.svg")
                               setCurrency(!currency)
                             }
                           }
                         >
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="ltclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/ltc.svg" /></div>
+                            -ml-2"><img alt="ltclogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/ltc.svg" /></div>
                         <div className="mr-1">LTC/USDT</div>
                       </div>
                       <div id="bch" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -386,13 +386,13 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={ () => {
                               setActivePairId("BCH/USDT")
-                              setActivePairIcon("https://platform.binarystars.cc/icons/bch.svg")
+                              setActivePairIcon("/images/bch.svg")
                               setCurrency(!currency)
                             }
                           }
                         >
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="bchlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/bch.svg" /></div>
+                            -ml-2"><img alt="bchlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/bch.svg" /></div>
                         <div className="mr-1">BCH/USDT</div>
                       </div>
                       <div id="xmr" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -400,12 +400,12 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"         
                           onClick={ () => {
                             setActivePairId("XMR/WETH")
-                            setActivePairIcon("https://platform.binarystars.cc/icons/xmr.svg")
+                            setActivePairIcon("/images/xmr.svg")
                             setCurrency(!currency)
                           }
                         }>
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="xmrlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/xmr.svg" /></div>
+                            -ml-2"><img alt="xmrlogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/xmr.svg" /></div>
                         <div className="mr-1">XMR/WETH</div>
                       </div>
                       <div id="eos" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -413,13 +413,13 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"                          
                           onClick={ () => {
                             setActivePairId("EOS/USDT")
-                            setActivePairIcon("https://platform.binarystars.cc/icons/eos.svg")
+                            setActivePairIcon("/images/eos.svg")
                             setCurrency(!currency)
                           }
                         }
                       >
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="eoslogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/eos.svg" /></div>
+                            -ml-2"><img alt="eoslogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/eos.svg" /></div>
                         <div className="mr-1">EOS/USDT</div>
                       </div>
                       <div id="bnb" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -427,12 +427,12 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"                       
                           onClick={ () => {
                             setActivePairId("BNB/BUSD")
-                            setActivePairIcon("https://platform.binarystars.cc/icons/bnb.svg")
+                            setActivePairIcon("/images/bnb.svg")
                             setCurrency(!currency)
                           }
                         }>
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="bnblogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/bnb.svg" /></div>
+                            -ml-2"><img alt="bnblogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/bnb.svg" /></div>
                         <div className="mr-1">BNB/BUSD</div>
                       </div>
                       <div id="xrp" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -440,13 +440,13 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"                 
                           onClick={ () => {
                             setActivePairId("XRP/USDT")
-                            setActivePairIcon("https://platform.binarystars.cc/icons/xrp.svg")
+                            setActivePairIcon("/images/xrp.svg")
                             setCurrency(!currency)
                           }
                         }
                       >
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="xrplogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/xrp.svg" /></div>
+                            -ml-2"><img alt="xrplogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/xrp.svg" /></div>
                         <div className="mr-1">XRP/USDT</div>
                       </div>
                       <div id="ada" className="m-1 flex w-auto flex-row rounded-lg p-1
@@ -454,13 +454,13 @@ export default function Home() {
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"             
                           onClick={ () => {
                             setActivePairId("ADA/USDT")
-                            setActivePairIcon("https://platform.binarystars.cc/icons/ada.svg")
+                            setActivePairIcon("icons/ada.svg")
                             setCurrency(!currency)
                           }
                         }
                       >
                         <div className="mr-2 mt-0.5
-                            -ml-2"><img alt="adalogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="https://platform.binarystars.cc/icons/ada.svg" /></div>
+                            -ml-2"><img alt="adalogo" className="h-5 w-5 sm:mr-2 md:h-6 md:w-6" src="/images/ada.svg" /></div>
                         <div className="mr-1">ADA/USDT</div>
                       </div>
                     </div>
