@@ -125,3 +125,109 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+#login_container {
+  width: 100vw;
+  height: 100vh;
+  background-attachment: fixed;
+    background-image: url(login_bg.jpg)!important;
+    background-position: 50%!important;
+    background-repeat: no-repeat!important;
+    background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+}
+
+.sr-only {
+  clip: rect(0,0,0,0);
+  border-width: 0;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.text-primary-purple-100 {
+  --tw-text-opacity: 1;
+  color: rgb(199 35 212/var(--tw-text-opacity));
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.btn-primary-purple {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: rgb(152 27 162/var(--tw-bg-opacity));
+  border-radius: 0.5rem;
+  color: rgb(255 255 255/var(--tw-text-opacity));
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  transition-duration: .3s;
+  transition-property: color,background-color,border-color,fill,stroke,-webkit-text-decoration-color;
+  transition-property: color,background-color,border-color,text-decoration-color,fill,stroke;
+  transition-property: color,background-color,border-color,text-decoration-color,fill,stroke,-webkit-text-decoration-color;
+  transition-timing-function: cubic-bezier(.4,0,.2,1);
+}
+
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+[type='password'], [type='text'], [type='phone'] {
+  appearance: none;
+  background-color: #fff;
+  border-color: #6B7280;
+  border-width: 1px;
+  border-radius: 0px;
+  padding-top: 0.5rem;
+  padding-right: 0.75rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  --tw-shadow: 0 0 #0000;
+}
+
+.input-primary {
+  --tw-border-opacity: 1;
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  // background-color: rgb(28 30 47/var(--tw-bg-opacity));
+  border-color: rgb(35 38 59/var(--tw-border-opacity));
+  border-radius: 0.375rem;
+  border-width: 1px;
+  // color: rgb(209 213 219/var(--tw-text-opacity));
+  display: block;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  position: relative;
+}
+
+.bg-opacity-60 {
+  --tw-bg-opacity: 0.6;
+}
+
+.bg-primary-dark-800 {
+  background-color: rgb(13 14 22/var(--tw-bg-opacity));
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
+}

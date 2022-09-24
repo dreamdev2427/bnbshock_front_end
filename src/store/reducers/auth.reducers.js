@@ -1,15 +1,12 @@
 import { 
-    AUTH_LOGOUT, 
-    AUTH_SUCCESS, 
-    GET_USER_DETAIL, 
     UPDATE_REFERAL_ADDRESS, 
     UPDATE_WEB3, 
+    SET_CHAIN_ID,
     SET_WALLET_ADDR, 
     UPDATE_WALLET_STATUS, 
     UPDATE_USER_BALANCE, 
     SET_OTHER_USER_DETAIL, 
-    SET_CHAIN_ID, 
-    CURRENT_USER, 
+    UPDATE_CURRENT_USER, 
     UPDATE_CONSIDERING_PAIR
 } from "../actions/action.types";
 
@@ -45,14 +42,9 @@ export function Auth(state = auth, action)
             return {
                 ...state, globalWeb3: action.payload
             }
-        case AUTH_SUCCESS:
-            return { ...state, user: action.payload };
-        case AUTH_LOGOUT:
-            // localStorage.removeItem("jwtToken");
-            return { ...state, user: action.payload };
-        case GET_USER_DETAIL:
+        case UPDATE_CURRENT_USER:
             return {
-                ...state, detail: action.payload
+                ...state, user: action.payload
             }
         case SET_WALLET_ADDR:
             return {
@@ -72,12 +64,6 @@ export function Auth(state = auth, action)
             return {...state, walletStatus: action.payload };
         default:
             return { ...state };
-    }
-}
-
-export function GetCurrentUser(state, action) {
-    if (action.type === CURRENT_USER) {
-        return state.user;
     }
 }
 

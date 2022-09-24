@@ -6,7 +6,7 @@ import {
     UPDATE_USER_BALANCE, 
     UPDATE_WALLET_STATUS,  
     SET_WALLET_ADDR, 
-    CURRENT_USER, 
+    UPDATE_CURRENT_USER, 
     UPDATE_REFERAL_ADDRESS, 
     UPDATE_CONSIDERING_PAIR
 } from "./action.types"
@@ -21,13 +21,6 @@ export const authSet = (payload) => dispatch => {
 export const authLogout = () => dispatch => {
     dispatch({
         type: AUTH_LOGOUT,
-        payload: {}
-    })
-}
-
-export const getCurrentUser = () => dispatch => {
-    dispatch({
-        type: CURRENT_USER,
         payload: {}
     })
 }
@@ -83,3 +76,25 @@ export const updateConsideringPair = (pairStr) => dispatch => {
         payload: pairStr
     })
 }
+
+export const logOutUserAction =  () => async (dispatch) => {
+    dispatch(cleanCurrentUser());
+    localStorage.removeItem("jwtToken");
+  }
+  
+  export const cleanCurrentUser = () => async(dispatch) =>{
+    dispatch( {
+      type: UPDATE_CURRENT_USER,
+      payload : {}
+    })
+  }
+  
+export const setCurrentUserAction = (userInfo) => async (dispatch) => {
+    //try to send data to the mongodb, if succeed, then dispatch
+    
+      dispatch({
+        type : UPDATE_CURRENT_USER,
+        payload : userInfo
+      })
+  
+  }

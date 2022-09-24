@@ -1,9 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Register from "./pages/Register";
 
 const ScrollToTop = React.lazy(() => import("./ScrollToTop"));
 const Home = React.lazy(() => import("./pages/Home"));
+const Login = React.lazy(() => import("./pages/Login"));
 const Deposit = React.lazy(() => import("./pages/Deposit"));
+const Signup = React.lazy(() => import("./pages/Register"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 function AppRoutes() {
@@ -14,7 +17,9 @@ function AppRoutes() {
           <ScrollToTop>
             <Routes>
               <Route path="/" element={<Home />}></Route>
-              <Route path="/deposit" element={<Deposit />}></Route>
+              <Route path="/deposit" element={<Deposit />}></Route>              
+              <Route path="/login" element={<Login />}></Route>      
+              <Route path="/register" element={<Signup />}></Route>
               <Route path="*" element={<NotFound />}></Route>
             </Routes>
           </ScrollToTop>

@@ -3,8 +3,10 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 import { NotificationManager } from 'react-notifications';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 import SideBar from '../components/SideBar';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { updateConsideringPair, updateGlobalWeb3, setConnectedChainId, setConnectedWalletAddress } from '../store/actions/auth.actions'
 import { 
   PLATFORM_CONTRACT_ADDRESS ,
@@ -27,6 +29,8 @@ const web3Modal = new Web3Modal({
 
 export default function Home() {
 
+  const navigate = useNavigate();
+
   const wallet = useSelector(state => state.auth.currentWallet);
   const globalChainId = useSelector(state => state.auth.currentChainId);
   const globalWeb3 = useSelector(state => state.auth.globalWeb3);
@@ -42,6 +46,11 @@ export default function Home() {
   const [web3Provider, setWeb3Provider] = useState({});
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    //check login
+    navigate("/login");
+  }, []);
 
   useEffect(() => {
     dispatch(updateConsideringPair(activePairId.replace("/", "")));
