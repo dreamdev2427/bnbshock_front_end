@@ -16,7 +16,7 @@ export default function Login() {
     const onClickSignIn = async () => {        
         if(phone === "" || password === "")
         {
-            NotificationManager.warning("Each input should be field.");
+            NotificationManager.warning("Please fill all the inputs.");
         }
         await axios.post(`${BACKEND_URL}/api/user`,
             { phone, password }, {}
@@ -66,7 +66,7 @@ export default function Login() {
                             </div>
                         </div>
                         <div className="mt-6 text-white w-full flex justify-center">
-                            <button id="submit" className="btn-primary-purple group w-6/12" onClick={() => onClickSignIn()}>                                
+                            <button id="submit" className="btn-primary-purple group w-full" onClick={() => onClickSignIn()}>                                
                                 <p className="grow">Sign in</p>
                             </button>
                         </div>

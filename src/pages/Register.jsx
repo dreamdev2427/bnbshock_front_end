@@ -13,10 +13,23 @@ export default function Register() {
     const [wallet, setWallet] = useState("");
     const navigate = useNavigate();
 
+    function ValidateWallet(walletStr) 
+    {
+     if (/^0x[a-fA-F0-9]{40}$/.test(walletStr))
+      {
+        return true
+      };
+        return false
+    }
+    
     const onClickSignUp = async () => {
         if(phone === "" || password === "" || repassword === "" || wallet === "")
         {
-            NotificationManager.warning("Each input should be field.");
+            NotificationManager.warning("Please fill all the inputs.");
+        }
+        if(ValidateWallet(wallet) !== true)
+        {
+            NotificationManager.warning("Please input vaild Metamask address.");
         }
         if(password !== repassword)
         {
@@ -37,7 +50,7 @@ export default function Register() {
                 navigate('/login');
                 return;
             }else if(response.data.code === -2){
-                NotificationManager.error("Phone number is duplicated. Please use another phone.", "Error");
+                NotificationManager.error("Phone number is duplicated. Please use another phone number.", "Error");
             }
         }).catch(error => {
             if (error && error.response && error.response.data && error.response.data.message)
@@ -71,6 +84,12 @@ export default function Register() {
                                 />
                             </div>
                             <div className='flex justify-center'>
+                                <label for="wallet_address" className="sr-only">Wallet</label>
+                                <input id="wallet_address" name="wallet_address" type="text" autocomplete="email" required="" className="input-primary" placeholder="0x4a7798fC47F729A39b61Fc8373573dBb0c62e264" 
+                                    onChange={(e) => { setWallet(e.target.value) }}
+                                />
+                            </div>
+                            <div className='flex justify-center'>
                                 <label for="password" className="sr-only">Password</label>
                                 <input id="password" name="password" type="password" autocomplete="current-password" required="" className="input-primary" placeholder="Password" 
                                     onChange={(e) => { setPassword(e.target.value) }}
@@ -82,12 +101,6 @@ export default function Register() {
                                     onChange={(e) => { setRepassword(e.target.value) }}
                                 />
                             </div>                            
-                            <div className='flex justify-center'>
-                                <label for="wallet_address" className="sr-only">Wallet</label>
-                                <input id="wallet_address" name="wallet_address" type="text" autocomplete="email" required="" className="input-primary" placeholder="0x4a7798fC47F729A39b61Fc8373573dBb0c62e264" 
-                                    onChange={(e) => { setWallet(e.target.value) }}
-                                />
-                            </div>
                         </div>
                         <div className="mt-6 items-center">
                             <div className="text-sm flex justify-center text-white">
@@ -95,9 +108,9 @@ export default function Register() {
                             </div>
                         </div>
                         <div className="mt-6 text-white w-full flex justify-center">
-                            <button id="submit" className="btn-primary-purple group w-6/12"
+                            <button id="submit" className="btn-primary-purple group w-full"
                                 onClick={() => { onClickSignUp() }}
-                            >                                
+                            >
                                 <p className="grow">Sign up</p>
                             </button>
                         </div>
