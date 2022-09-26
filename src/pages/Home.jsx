@@ -138,9 +138,7 @@ export default function Home() {
         from: wallet,
         value: vettingAmount,
         gasPrice: 30 * (10 ** 9)
-      }).then((data) => {
-        console.log("buyTickets return event : ", data.events.TicketsBought.returnValues);
-      })
+      });
       return {
         success: true,
         value: []
