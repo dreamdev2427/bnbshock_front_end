@@ -184,9 +184,7 @@ export default function Home() {
         if(result.success === false) {
           NotificationManager.error(result.message, 'Fail', 10000, () => {});
         }
-        if(result.success === true) NotificationManager.success("Entered !!.", 'Information', 5000, async () => {
-          
-          });    
+        if(result.success === true) NotificationManager.success("Entered !!.", 'Information', 5000);
       }
       catch(error) {
         console.log(error);

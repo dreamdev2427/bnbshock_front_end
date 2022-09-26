@@ -93,7 +93,7 @@ function Index() {
           }
         }
         else if(data.type === "victims") {
-            if(data.victims.includes(user?.wallet)) NotificationManager.Warning("Ops. You are a victim.", "Information");
+            if(data.victims.includes(user?.wallet)) NotificationManager.warning("Ops. You are a victim.", "Information");
         }
     });  
   }, []);
