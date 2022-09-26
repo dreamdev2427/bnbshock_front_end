@@ -62,7 +62,7 @@ export default function Home() {
     {
       setTimeout(() => {
         dispatch(setConteffiflag(false));
-      }, 5000);
+      }, 10000);
     }
   }, [showConteffi]);
 

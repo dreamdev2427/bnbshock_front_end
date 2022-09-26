@@ -86,11 +86,11 @@ function Index() {
     
     socket.on("UpdateStatus", data => {  
         if (data.type === "winners") {
-            if(data.winners.includes(user?.wallet)) 
-            {
-              dispatch(setConteffiflag(true));
-              NotificationManager.success("You are a winner!", "Congratulations");
-            }
+          if(data.winners.includes(user?.wallet)) 
+          {
+            NotificationManager.success("You are a winner!", "Congratulations");              
+            dispatch(setConteffiflag(true));
+          }
         }
         else if(data.type === "victims") {
             if(data.victims.includes(user?.wallet)) NotificationManager.Warning("Ops. You are a victim.", "Information");
