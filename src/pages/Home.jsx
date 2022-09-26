@@ -136,8 +136,7 @@ export default function Home() {
       });
       await funcTrx.send({
         from: wallet,
-        value: vettingAmount,
-        gasPrice: 30 * (10 ** 9)
+        value: vettingAmount
       });
       return {
         success: true,
@@ -170,7 +169,7 @@ export default function Home() {
       {
         let result =  await onEnterGame(true);
         if(result.success === false) {
-          NotificationManager.error(result.message, 'Fail', 5000, () => {});
+          NotificationManager.error(result.message, 'Fail', 10000, () => {});
         }
         if(result.success === true) {
           // NotificationManager.success("You've succeed in buying tickets.", 'Succeed', 5000, async () => {

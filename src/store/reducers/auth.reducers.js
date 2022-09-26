@@ -70,3 +70,7 @@ export function Auth(state = auth, action)
 export function getGlobalWeb3(state){
     return state.auth.globalWeb3;
 }
+
+export function getUserWallet(state) {
+    return state.auth.user?.wallet || "";
+}

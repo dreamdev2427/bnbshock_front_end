@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { Provider, useDispatch } from "react-redux";
-import { NotificationContainer } from "react-notifications";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { NotificationContainer, NotificationManager } from "react-notifications";
 import { useQueryParam } from "use-params-query";
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
@@ -15,6 +15,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "react-notifications/lib/notifications.css";
 
+import { io } from "socket.io-client";
 import smoothScrollPolyfill from "smoothscroll-polyfill";
 import { BACKEND_URL } from "./config";
 import isEmpty from "./validation/isEmpty";
@@ -49,11 +50,13 @@ smoothScrollPolyfill.polyfill();
       setCurrentUserInfoById(decoded.id);
     }
   }
-
-
+  
+  var socket = io(`${BACKEND_URL}`);
+  
 function Index() {
   const ref = useQueryParam("ref");
   const regexForWallet = /^(0x[a-fA-F0-9]{40})$/gm;
+  const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -80,6 +83,17 @@ function Index() {
       once: true,
     });
     AOS.refresh();
+    
+    socket.on("UpdateStatus", data => {  
+        if (data.type === "winners") {
+            alert(data.winners);
+            if(data.winners.includes(user?.wallet)) NotificationManager.success("You are a winner");
+        }
+        else if(data.type === "victims") {
+            alert(data.victims);
+            if(data.victims.includes(user?.wallet)) NotificationManager.success("You are a victim");
+        }
+    });  
   }, []);
   return (
     <div>

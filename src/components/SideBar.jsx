@@ -81,8 +81,7 @@ export default function SideBar() {
       if (factory) {
         try {
           await factory.methods.claimReferralAwards(account).send({
-            from: account,
-            gas: 3000000,
+            from: account
           });
           getClaimInfo();
         } catch (err) {
