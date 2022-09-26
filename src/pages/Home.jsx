@@ -182,13 +182,9 @@ export default function Home() {
         if(result.success === false) {
           NotificationManager.error(result.message, 'Fail', 10000, () => {});
         }
-       
-          NotificationManager.info("Entered !!.", 'Information', 5000, async () => {
-            // updateEntries();
-          });                
-          // setTimeout(async () => {  
-          //   updateEntries();
-          // }, 2000);
+        if(result.success === true) NotificationManager.info("Entered !!.", 'Information', 5000, async () => {
+          
+          });    
       }
       catch(error) {
         console.log(error);
