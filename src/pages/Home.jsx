@@ -155,6 +155,8 @@ export default function Home() {
   const onClickUp = async ( ) => {
     if(wallet && globalWeb3 && amount > 0)
     {
+      //also check here, the global id is same with logined wallet address
+      //make sure equal with that, otherwise, return back
       if(globalChainId !== POLYGON_CHAIN_ID ) {            
         switchWalletToANetwork(POLYGON_CHAIN_ID);
       }
@@ -182,6 +184,8 @@ export default function Home() {
   const onClickDown = async () => {
     if(wallet && globalWeb3 && amount > 0)
     {
+      //also check here, the global id is same with logined wallet address
+      //make sure equal with that, otherwise, return back
       if(globalChainId !== POLYGON_CHAIN_ID) {     
         switchWalletToANetwork(POLYGON_CHAIN_ID);    
       }      

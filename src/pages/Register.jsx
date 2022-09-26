@@ -37,7 +37,7 @@ export default function Register() {
         }
         //test phone, wallet
         
-        await axios.post(`${BACKEND_URL}/api/user`,
+        await axios.post(`${BACKEND_URL}/api/user/register`,
         {
             name, 
             phone, 
@@ -51,6 +51,8 @@ export default function Register() {
                 return;
             }else if(response.data.code === -2){
                 NotificationManager.error("Phone number is duplicated. Please use another phone number.", "Error");
+            }else if(response.data.code === -3){
+                NotificationManager.error("Walle address is Invalid.", "Error");
             }
         }).catch(error => {
             if (error && error.response && error.response.data && error.response.data.message)

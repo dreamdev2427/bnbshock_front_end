@@ -21,7 +21,6 @@ import isEmpty from "./validation/isEmpty";
 
 smoothScrollPolyfill.polyfill();
 
-
   const setCurrentUserInfoById = (userId) =>{ 
     let filter = userId ? '/'+userId : '';
     axios.get(`${BACKEND_URL}/api/user/${filter}`, {}, {

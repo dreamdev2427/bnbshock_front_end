@@ -18,7 +18,7 @@ export default function Login() {
         {
             NotificationManager.warning("Please fill all the inputs.");
         }
-        await axios.post(`${BACKEND_URL}/api/user`,
+        await axios.post(`${BACKEND_URL}/api/user/login`,
             { phone, password }, {}
         ).then(response => 
         {

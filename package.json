@@ -38,6 +38,8 @@
     "redux-thunk": "^2.4.1",
     "resolve-url-loader": "^5.0.0",
     "smoothscroll-polyfill": "^0.4.4",
+    "socket.io": "^4.5.2",
+    "socket.io-client": "^4.5.2",
     "styled-components": "^5.3.5",
     "swiper": "^8.1.4",
     "use-params-query": "^0.1.11",
