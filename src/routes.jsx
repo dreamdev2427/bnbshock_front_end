@@ -16,7 +16,8 @@ function AppRoutes() {
         <React.Suspense fallback={<>Loading</>}>
           <ScrollToTop>
             <Routes>
-              <Route path="/" element={<Home />}></Route>
+              <Route path="/" element={<Home />}></Route>              
+              <Route path="/home" element={<Home />}></Route>
               <Route path="/deposit" element={<Deposit />}></Route>              
               <Route path="/login" element={<Login />}></Route>      
               <Route path="/register" element={<Signup />}></Route>

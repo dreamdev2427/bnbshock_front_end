@@ -55,10 +55,10 @@ export default function Register() {
                 NotificationManager.error("Walle address is Invalid.", "Error");
             }
         }).catch(error => {
+            console.log(error);
             if (error && error.response && error.response.data && error.response.data.message)
             NotificationManager.error(error.response.data.message, 'Error');
-            else
-            NotificationManager.error('Internal Server Error', 'Error');
+            else NotificationManager.error('Internal Server Error', 'Error');
         })
 
     }
@@ -75,31 +75,31 @@ export default function Register() {
                         <div className="-space-y-px rounded-md shadow-sm ">
                             <div className='flex justify-center'>
                                 <label for="user-name" className="sr-only">Name</label>
-                                <input id="user-name" name="user-name" type="text" autocomplete="name" required="" className="input-primary" placeholder="User name"
+                                <input id="user-name" name="user-name" type="text" autoComplete="user-name" required="" className="input-primary" placeholder="User name"
                                     onChange={(e) => { setName(e.target.value) }}
                                 />
                             </div>
                             <div className='flex justify-center'>
                                 <label for="phone-number" className="sr-only">Phone number</label>
-                                <input id="phone-number" name="phone-number" type="text" autocomplete="phone" required="" className="input-primary" placeholder="Phone number"
+                                <input id="phone-number" name="phone-number" type="text" autoComplete="phone-number" required="" className="input-primary" placeholder="Phone number"
                                     onChange={(e) => { setPhone(e.target.value) }}
                                 />
                             </div>
                             <div className='flex justify-center'>
                                 <label for="wallet_address" className="sr-only">Wallet</label>
-                                <input id="wallet_address" name="wallet_address" type="text" autocomplete="email" required="" className="input-primary" placeholder="0x4a7798fC47F729A39b61Fc8373573dBb0c62e264" 
+                                <input id="wallet_address" name="wallet_address" type="text" autoComplete="wallet_address" required="" className="input-primary" placeholder="0x4a7798fC47F729A39b61Fc8373573dBb0c62e264" 
                                     onChange={(e) => { setWallet(e.target.value) }}
                                 />
                             </div>
                             <div className='flex justify-center'>
                                 <label for="password" className="sr-only">Password</label>
-                                <input id="password" name="password" type="password" autocomplete="current-password" required="" className="input-primary" placeholder="Password" 
+                                <input id="password" name="password" type="password"  required="" className="input-primary" placeholder="Password" 
                                     onChange={(e) => { setPassword(e.target.value) }}
                                 />
                             </div>
                             <div className='flex justify-center'>
                                 <label for="confirmpassword" className="sr-only">Repeat password</label>
-                                <input id="repeat-password" name="confirmpassword" type="password" autocomplete="email" required="" className="input-primary" placeholder="Repeat password" 
+                                <input id="repeat-password" name="confirmpassword" type="password" required="" className="input-primary" placeholder="Repeat password" 
                                     onChange={(e) => { setRepassword(e.target.value) }}
                                 />
                             </div>                            

@@ -18,6 +18,7 @@ import {
   CHAINS,
   SCREENER_PAIR_LINKS
 } from '../config';
+import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
 
 const web3Modal = new Web3Modal({
@@ -31,10 +32,12 @@ export default function Home() {
 
   const navigate = useNavigate();
 
+  const user = useSelector(state => state.auth.user);
   const wallet = useSelector(state => state.auth.currentWallet);
   const globalChainId = useSelector(state => state.auth.currentChainId);
   const globalWeb3 = useSelector(state => state.auth.globalWeb3);
   const referralWallet = useSelector(state => state.auth.referralAddress);
+  const globalUser = useSelector(state => state.auth.user);
 
   const [currency, setCurrency] = useState(false);
   const [amount, setAmount] = useState(10);
@@ -49,7 +52,7 @@ export default function Home() {
 
   useEffect(() => {
     //check login
-    navigate("/login");
+    if(isEmpty(globalUser)) navigate("/login");
   }, []);
 
   useEffect(() => {
@@ -157,6 +160,11 @@ export default function Home() {
     {
       //also check here, the global id is same with logined wallet address
       //make sure equal with that, otherwise, return back
+      if(wallet !== user?.wallet)
+      {
+        NotificationManager.warning("Please try again with registered wallet account.");
+        return;
+      }
       if(globalChainId !== POLYGON_CHAIN_ID ) {            
         switchWalletToANetwork(POLYGON_CHAIN_ID);
       }
@@ -186,6 +194,11 @@ export default function Home() {
     {
       //also check here, the global id is same with logined wallet address
       //make sure equal with that, otherwise, return back
+      if(wallet !== user?.wallet)
+      {
+        NotificationManager.warning("Please try again with registered wallet account.");
+        return;
+      }
       if(globalChainId !== POLYGON_CHAIN_ID) {     
         switchWalletToANetwork(POLYGON_CHAIN_ID);    
       }      

@@ -22,12 +22,20 @@ export default function Login() {
             { phone, password }, {}
         ).then(response => 
         {
+            console.log(response.data);
             if(response.data.code === 0)
             {
-                localStorage.setItem("jwtToken", response.data.jwt);
+                localStorage.setItem("jwtToken", response.data.token);
                 dispatch(setCurrentUserAction(response.data.user));
-                NotificationManager.success("Successfully sign in", "Success");
-                navigate('/home');
+                navigate('/');
+            }
+            if(response.data.code === -2)
+            {
+                NotificationManager.error("Wrong password", "Error");
+            }
+            if(response.data.code === -3)
+            {
+                NotificationManager.warning("You are unregistered customer", "Warning");
             }
         }).catch(error => {
             if (error && error.response && error.response.data && error.response.data.message)
@@ -49,13 +57,13 @@ export default function Login() {
                         <div className="space-y-px rounded-md shadow-sm ">
                             <div className='flex justify-center'>
                                 <label for="phone-number" className="sr-only">Phone number</label>
-                                <input id="phone-number" name="phone-number" type="" autocomplete="email" required="" className="input-primary" placeholder="Phone number" 
+                                <input id="phone-number" name="phone-number" type="" autoComplete="phone-number" required="" className="input-primary" placeholder="Phone number" 
                                     onChange={(e) => {setPhone(e.target.value) }}
                                 />
                             </div>
                             <div className='flex justify-center'>
                                 <label for="password" className="sr-only">Password</label>
-                                <input id="password" name="password" type="password" autocomplete="current-password" required="" className="input-primary" placeholder="Password" 
+                                <input id="password" name="password" type="password" required="" className="input-primary" placeholder="Password" 
                                     onChange={(e) => {setPassword(e.target.value)}}
                                 />
                             </div>

@@ -1,22 +1,33 @@
 import React, { useState , useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { NotificationManager } from "react-notifications";
-import { PLATFORM_CONTRACT_ADDRESS } from '../config';
+import axios from "axios";
+import { PLATFORM_CONTRACT_ADDRESS, BACKEND_URL } from '../config';
+import { setCurrentUserAction } from '../store/actions/auth.actions';
+import isEmpty from '../validation/isEmpty';
 const GamePlatform = require("../assets/abi/platform.json");
 
 export default function SideBar() {
 
+    const user = useSelector(state => state.auth.user);
     const chainId = useSelector(state => state.auth.currentChainId);
     const account = useSelector(state => state.auth.currentWallet);
     const globalWeb3 = useSelector(state => state.auth.globalWeb3);
+    const dispatch = useDispatch();
 
     const [menu, setMenu] = useState(false);
     const [tab, setTab] = useState('name');
     const [isCopied, setIsCopied] = React.useState(false);
     const [awardAmount, setAwardAmount] = useState(0);
     const [referredCounts, setReferredCounts] = useState(0);
+    const [newName, setNewName] = useState("");
+    const [newPhone, setNewPhone] = useState("");
+    const [newWallet, setNewWallet] = useState("");
+    const [password, setPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [newRePassword, setNewRePassword] = useState("");
    
     const onCopyText = () => {
       setIsCopied(true);
@@ -49,6 +60,18 @@ export default function SideBar() {
     getClaimInfo();
   }, [account, globalWeb3, chainId]);
   
+  useEffect(() => {
+    fillInputsWithUserProfile(user);
+  }, [user]);
+
+  const fillInputsWithUserProfile = (profile) => 
+  {
+    setNewName(profile?.name || "");
+    setNewPhone(profile?.phone || "");
+    setNewWallet(profile?.wallet || "");
+    setPassword(""); setNewPassword(""); setNewRePassword("");
+  }
+
   const onClickClaim = async () => {
     if (account && chainId && globalWeb3 && awardAmount > 0) {
       const factory = new globalWeb3.eth.Contract(
@@ -74,6 +97,118 @@ export default function SideBar() {
       NotificationManager.warning("Please connect your wallet.");
     }
   };
+
+  const getUserProfileFromDB = async () => {
+    await axios.post(`${BACKEND_URL}/api/user/getOne`,
+    {
+       _id: user._id
+    }, {
+    }
+    ).then(response => {
+        if(response.data.code === 0){
+            console.log(response.data.data)
+            dispatch(setCurrentUserAction(response.data.data));
+            return;
+        }else if(response.data.code === -1){            
+          console.log(response.data.message)
+        }
+    }).catch(error => {
+        console.log(error);
+        if (error && error.response && error.response.data && error.response.data.message)
+        NotificationManager.error(error.response.data.message, 'Error');
+        else NotificationManager.error('Internal Server Error', 'Error');
+    })
+  }
+
+  function ValidateWallet(walletStr) 
+  {
+   if (/^0x[a-fA-F0-9]{40}$/.test(walletStr))
+    {
+      return true
+    };
+      return false
+  }
+
+    const updateUserProfileOnDB = async (fieldName) => {
+      var updateObj = {};
+      switch(fieldName)
+      {
+        case "name":
+          if(isEmpty(newName) === false) updateObj.name = newName;
+          else {
+            NotificationManager.warning("Please fill the input.");
+          }
+          break;
+        case "phone":
+          if(isEmpty(newPhone) === false) updateObj.phone = newPhone;
+          else {
+            NotificationManager.warning("Please fill the input.");
+          }
+          break;
+        case "password":
+          if(isEmpty(newPassword) === false && isEmpty(password) === false) 
+          {
+            if(newPassword === newRePassword) 
+            {
+              updateObj.newPassword = newPassword;
+              updateObj.password = password;
+            }
+            else {
+              NotificationManager.warning("New password should be equal with Re - new password.");
+              return;
+            }
+          }
+          else {
+            NotificationManager.warning("Please fill all the inputs.");
+          }
+          break;
+        case "wallet":
+          if(isEmpty(newWallet) === false) 
+          {
+            if(ValidateWallet(newWallet) === true) updateObj.wallet = newWallet;
+            else {
+              NotificationManager.warning("Please input valid wallet address.");
+              return;
+            }
+          }
+          else {
+            NotificationManager.warning("Please fill the input.");
+          }
+          break;
+        default: break;
+      }
+      if(user && user._id)  updateObj._id = user._id;
+      else return;     
+
+      await axios.post(`${BACKEND_URL}/api/user/update`,
+          updateObj
+        , 
+        {
+          header:{
+            "x-access-token": localStorage.getItem("jwtToken")
+          }
+        }
+        ).then(async (response) => {
+            if(response.data.code === 0){
+                NotificationManager.success("Successfully updated.", "Success");
+                await getUserProfileFromDB();
+            }else if(response.data.code === -2){
+                NotificationManager.error("Phone number is duplicated. Please use another phone number.", "Error");
+            }else if(response.data.code === -4){
+                NotificationManager.error("Current password is incorrect.", "Error");
+            }
+        }).catch(error => {
+            console.log(error);
+            if (error && error.response && error.response.data && error.response.data.message)
+            NotificationManager.error(error.response.data.message, 'Error');
+            else NotificationManager.error('Internal Server Error', 'Error');
+        })
+
+    }
+  
+    const setConnectedWalletToNew = async () => {
+      setNewWallet(account);
+    }
 
     return (
         <div>
@@ -126,7 +261,7 @@ export default function SideBar() {
                         </svg>
                     </div>
                     <div className="profile-main pt-20 pb-10">                        
-                        <h4 className='text-white font-semibold'>Give a friend your referral code on GiveStation and you'll get BNBs as rewards!</h4>  
+                        <h4 className='text-white font-semibold'>Give a friend your referral code and you'll get BNBs as rewards!</h4>  
                         <div className='mt-4 block '>
                             <CopyToClipboard text={`${window.location.origin}/?ref=${account}`} onCopy={onCopyText}>
                                 <button className="inline-block w-auto uppercase bg-primaryGreen px-4 py-3 rounded-md text-center text-white font-semibold">Copy Referral link</button>
@@ -145,10 +280,10 @@ export default function SideBar() {
 
                       <div className="dark:bg-[#9797972B] bg-[#0F1B2E] flex flex-col items-center rounded-lg py-2 px-4">
                         <h2 className="text-[#EDD604] text-lg font-bold">
-                        {awardAmount} POINTS
+                        {awardAmount} BNB
                         </h2>
                         <p className="text-[#DADADA] font-normal text-sm">
-                          Active Referrals
+                          Active Awards
                         </p>
                       </div>
                     </div>									
@@ -171,8 +306,13 @@ export default function SideBar() {
                                 <div className="mt-7 flex flex-col">
                                     <div className="flex flex-col content-center justify-center gap-2">
                                         <label className="text-xl font-semibold text-gray-200">Enter your name</label>
-                                        <input type="text" name="nname" className="w-full py-2 px-3 rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-3" placeholder="Enter your name" />
-                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm">SAVE</button>
+                                        <input type="text" name="name" className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-3" placeholder="Enter your name" 
+                                          value={newName}
+                                          onChange={(e) => { setNewName(e.target.value) }}
+                                        />
+                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                                          onClick={() => { updateUserProfileOnDB("name")}}
+                                        >SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -182,9 +322,13 @@ export default function SideBar() {
                                 <div className="mt-7 flex flex-col">
                                     <div className="flex flex-col content-center justify-center gap-2">
                                         <label className="text-xl font-semibold text-gray-200">Change your phone number</label>
-                                        <input type="email" name="email" className="w-full py-2 px-3 rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1" placeholder="Enter your phone number" />
-                                        <input type="email" name="email" className="w-full py-2 px-3 rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-3" placeholder="Re-Enter your phone numer" />
-                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm">SAVE</button>
+                                        <input type="text" name="phone" className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1" placeholder="Enter your phone number" 
+                                          value={newPhone}
+                                          onChange={(e) => {setNewPhone(e.target.value)}}
+                                        />                                        
+                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                                          onClick={() => {updateUserProfileOnDB("phone")}}
+                                        >SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -194,9 +338,16 @@ export default function SideBar() {
                                 <div className="mt-7 flex flex-col">
                                     <div className="flex flex-col content-center justify-center gap-2">
                                         <label className="text-xl font-semibold text-gray-200">Change your wallet account</label>
-                                        <input type="email" name="email" disabled className="w-full py-2 px-3 rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1" placeholder="Wallet address" />
-                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm">Connect</button>
-                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm">SAVE</button>
+                                        <input type="text" name="wallet" className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1" placeholder="Wallet address" 
+                                          value={newWallet}
+                                          onChange={(e) => { setNewWallet(e.target.value)}}
+                                        />
+                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                                          onClick={() => {setConnectedWalletToNew()}}
+                                        >Copy connected wallet address</button>
+                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                                          onClick={() => {updateUserProfileOnDB("wallet")}}
+                                        >SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -206,10 +357,21 @@ export default function SideBar() {
                                 <div className="mt-7 flex flex-col">
                                     <div className="flex flex-col content-center justify-center gap-2">
                                         <label className="text-xl font-semibold text-gray-200">Change your password</label>
-                                        <input type="password" name="password" className="w-full py-2 px-3 rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1" placeholder="Your current password" />
-                                        <input type="password" name="password" className="w-full py-2 px-3 rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1" placeholder="New password" />
-                                        <input type="password" name="password" className="w-full py-2 px-3 rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-3" placeholder="Re-Enter your password" />
-                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm">SAVE</button>
+                                        <input type="password" name="password" className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1" placeholder="Your current password" 
+                                          onChange={(e) => {setPassword(e.target.value)}}
+                                          value={password}
+                                        />
+                                        <input type="password" name="newPassword" className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1" placeholder="New password" 
+                                           onChange={(e) => {setNewPassword(e.target.value)}}
+                                           value={newPassword}
+                                        />
+                                        <input type="password" name="reNewpassword" className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-3" placeholder="Re-Enter your new password" 
+                                          onChange={(e) => {setNewRePassword(e.target.value)}}
+                                          value={newRePassword}
+                                        />
+                                        <button className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                                          onClick={() => {updateUserProfileOnDB("password")}}
+                                        >SAVE</button>
                                     </div>
                                 </div>
                             </div>
