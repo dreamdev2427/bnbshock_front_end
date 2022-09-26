@@ -89,11 +89,11 @@ function Index() {
             if(data.winners.includes(user?.wallet)) 
             {
               dispatch(setConteffiflag(true));
-              NotificationManager.info("You are a winner!", "Congratulations");
+              NotificationManager.success("You are a winner!", "Congratulations");
             }
         }
         else if(data.type === "victims") {
-            if(data.victims.includes(user?.wallet)) NotificationManager.info("Ops. You are a victim.", "Information");
+            if(data.victims.includes(user?.wallet)) NotificationManager.Warning("Ops. You are a victim.", "Information");
         }
     });  
   }, []);

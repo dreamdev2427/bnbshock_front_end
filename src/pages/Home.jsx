@@ -60,7 +60,9 @@ export default function Home() {
   useEffect(() => {
     if(showConteffi === true)
     {
-      dispatch(setConteffiflag(false));
+      setTimeout(() => {
+        dispatch(setConteffiflag(false));
+      }, 5000);
     }
   }, [showConteffi]);
 
@@ -182,7 +184,7 @@ export default function Home() {
         if(result.success === false) {
           NotificationManager.error(result.message, 'Fail', 10000, () => {});
         }
-        if(result.success === true) NotificationManager.info("Entered !!.", 'Information', 5000, async () => {
+        if(result.success === true) NotificationManager.success("Entered !!.", 'Information', 5000, async () => {
           
           });    
       }

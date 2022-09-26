@@ -102,7 +102,7 @@ export const setCurrentUserAction = (userInfo) => async (dispatch) => {
 
   //UPDATE_SHOW_CONTEFFI
   
-export const setConteffiflag = (flag) => async (dispatch) => {
+export const setConteffiflag = flag => dispatch => {
     //try to send data to the mongodb, if succeed, then dispatch
     
       dispatch({
