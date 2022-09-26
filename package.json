@@ -20,6 +20,7 @@
     "react": "^17.0.2",
     "react-bootstrap": "^2.4.0",
     "react-chartjs-2": "^4.3.1",
+    "react-confetti": "^6.1.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-crypto-chart": "^0.0.6",
     "react-crypto-graph": "^1.0.7",

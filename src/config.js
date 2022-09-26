@@ -1,4 +1,4 @@
-export const PLATFORM_CONTRACT_ADDRESS = "0x0E1010742B0CD5237B1950936E3B433132F11032";
+export const PLATFORM_CONTRACT_ADDRESS = "0x3712d2102348623aa546cb45863D53736e013499";
 
 export const WINING_PERCENTS_PER_TIMEFRAME = {
     "10sec" : 10,
@@ -13,9 +13,9 @@ export  const ETHEREUM_RPC_URL = "https://nd-264-440-618.p2pify.com/dfea93c53f74
 
 export  const ETHEREUM_CHAIN_ID = 5;
 
-export  const POLYGON_RPC_URL = "https://nd-129-163-341.p2pify.com/155790d84cb60622110199d880d46d08";
+export  const POLYGON_RPC_URL = "https://nd-388-737-093.p2pify.com/29cb4f848dae8ff9dda2f3d4eec1e702";
 
-export const POLYGON_CHAIN_ID = 80001;
+export const POLYGON_CHAIN_ID = 3;
 
 export  const CHAINS = {
     ETHEREUM_CHAIN_ID: {

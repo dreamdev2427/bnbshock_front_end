@@ -3,11 +3,12 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 import { NotificationManager } from 'react-notifications';
 import axios from "axios";
+import Confetti from "react-confetti";
 import { useNavigate } from 'react-router-dom';
 import SideBar from '../components/SideBar';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { updateConsideringPair, updateGlobalWeb3, setConnectedChainId, setConnectedWalletAddress } from '../store/actions/auth.actions'
+import { updateConsideringPair, updateGlobalWeb3, setConnectedChainId, setConnectedWalletAddress, setConteffiflag } from '../store/actions/auth.actions'
 import { 
   PLATFORM_CONTRACT_ADDRESS ,
   WINING_PERCENTS_PER_TIMEFRAME,
@@ -38,6 +39,7 @@ export default function Home() {
   const globalWeb3 = useSelector(state => state.auth.globalWeb3);
   const referralWallet = useSelector(state => state.auth.referralAddress);
   const globalUser = useSelector(state => state.auth.user);
+  const showConteffi = useSelector(state => state.auth.showContefii);
 
   const [currency, setCurrency] = useState(false);
   const [amount, setAmount] = useState(10);
@@ -54,6 +56,13 @@ export default function Home() {
     //check login
     if(isEmpty(globalUser)) navigate("/login");
   }, []);
+
+  useEffect(() => {
+    if(showConteffi === true)
+    {
+      dispatch(setConteffiflag(false));
+    }
+  }, [showConteffi]);
 
   useEffect(() => {
     dispatch(updateConsideringPair(activePairId.replace("/", "")));
@@ -129,7 +138,9 @@ export default function Home() {
       }      
       pairPrice = globalWeb3.utils.toWei(pairPrice.toString(), "ether");
       vettingAmount = globalWeb3.utils.toWei(amount.toString(), "ether");
-      let funcTrx = gameContract.methods.enterVetting(activePairId.replace("/", ""), pairPrice, vettingPeriod, upOrdown, referralWallet);
+      let funcTrx;
+      if(referralWallet !== undefined) funcTrx = gameContract.methods.enterVetting(activePairId.replace("/", ""), pairPrice, vettingPeriod, upOrdown, referralWallet);
+      else funcTrx = gameContract.methods.enterVettingWithoutRef(activePairId.replace("/", ""), pairPrice, vettingPeriod, upOrdown);
       await funcTrx.estimateGas({
         from: wallet,
         value: vettingAmount
@@ -171,17 +182,16 @@ export default function Home() {
         if(result.success === false) {
           NotificationManager.error(result.message, 'Fail', 10000, () => {});
         }
-        if(result.success === true) {
-          // NotificationManager.success("You've succeed in buying tickets.", 'Succeed', 5000, async () => {
-          //   updateEntries();
-          // });                
+       
+          NotificationManager.info("Entered !!.", 'Information', 5000, async () => {
+            // updateEntries();
+          });                
           // setTimeout(async () => {  
           //   updateEntries();
           // }, 2000);
-        }
       }
       catch(error) {
-        return;
+        console.log(error);
       }
     }
   }
@@ -629,6 +639,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+      {
+          showConteffi && <Confetti />
+      }
     </div>
   )
 }

@@ -7,7 +7,8 @@ import {
     UPDATE_USER_BALANCE, 
     SET_OTHER_USER_DETAIL, 
     UPDATE_CURRENT_USER, 
-    UPDATE_CONSIDERING_PAIR
+    UPDATE_CONSIDERING_PAIR,
+    UPDATE_SHOW_CONTEFFI
 } from "../actions/action.types";
 
 const auth = {
@@ -23,12 +24,17 @@ const auth = {
     nativePrice: {},
     campaigns: [],
     consideringPairId: "BTCUSDT",
-    referralAddress: "0x8E4BCCA94eE9ED539D9f1e033d9c949B8D7de6C6"
+    referralAddress: undefined, //"0x8E4BCCA94eE9ED539D9f1e033d9c949B8D7de6C6"
+    showContefii: false
 }
 
 export function Auth(state = auth, action) 
 {
     switch (action.type) {
+        case UPDATE_SHOW_CONTEFFI:
+            return {
+                ...state, showContefii: action.payload
+            }
         case UPDATE_CONSIDERING_PAIR:
             return {
                 ...state, consideringPairId: action.payload

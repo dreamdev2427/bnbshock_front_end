@@ -6,7 +6,7 @@ import { useQueryParam } from "use-params-query";
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
 import { store } from "./store";
-import { updateReferalAddress, cleanCurrentUser, setCurrentUserAction } from "./store/actions/auth.actions";
+import { updateReferalAddress, cleanCurrentUser, setCurrentUserAction, setConteffiflag } from "./store/actions/auth.actions";
 import AppRoutes from "./routes";
 import "./assets/css/app.css";
 import "./assets/css/style.scss";
@@ -86,15 +86,18 @@ function Index() {
     
     socket.on("UpdateStatus", data => {  
         if (data.type === "winners") {
-            alert(data.winners);
-            if(data.winners.includes(user?.wallet)) NotificationManager.success("You are a winner");
+            if(data.winners.includes(user?.wallet)) 
+            {
+              dispatch(setConteffiflag(true));
+              NotificationManager.info("You are a winner!", "Congratulations");
+            }
         }
         else if(data.type === "victims") {
-            alert(data.victims);
-            if(data.victims.includes(user?.wallet)) NotificationManager.success("You are a victim");
+            if(data.victims.includes(user?.wallet)) NotificationManager.info("Ops. You are a victim.", "Information");
         }
     });  
   }, []);
+
   return (
     <div>
       <AppRoutes />

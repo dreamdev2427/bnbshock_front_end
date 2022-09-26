@@ -8,7 +8,8 @@ import {
     SET_WALLET_ADDR, 
     UPDATE_CURRENT_USER, 
     UPDATE_REFERAL_ADDRESS, 
-    UPDATE_CONSIDERING_PAIR
+    UPDATE_CONSIDERING_PAIR,
+    UPDATE_SHOW_CONTEFFI
 } from "./action.types"
 
 export const authSet = (payload) => dispatch => {
@@ -95,6 +96,18 @@ export const setCurrentUserAction = (userInfo) => async (dispatch) => {
       dispatch({
         type : UPDATE_CURRENT_USER,
         payload : userInfo
+      })
+  
+  }
+
+  //UPDATE_SHOW_CONTEFFI
+  
+export const setConteffiflag = (flag) => async (dispatch) => {
+    //try to send data to the mongodb, if succeed, then dispatch
+    
+      dispatch({
+        type : UPDATE_SHOW_CONTEFFI,
+        payload : flag
       })
   
   }
