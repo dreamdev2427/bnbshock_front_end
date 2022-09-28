@@ -29,6 +29,12 @@ export default function Register() {
     if (password !== repassword) {
       NotificationManager.error("Password should be equal with Re - password.");
     }
+    if (password.length < 8) {
+      NotificationManager.warning(
+        "Length of password should be biger equal or more than 8 characters."
+      );
+    }
+
     //test phone, wallet
 
     await axios
