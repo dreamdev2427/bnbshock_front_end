@@ -22,17 +22,21 @@ export default function Register() {
   const onClickSignUp = async () => {
     if (phone === "" || password === "" || repassword === "" || wallet === "") {
       NotificationManager.warning("Please fill all the inputs.");
+      return;
     }
     if (ValidateWallet(wallet) !== true) {
       NotificationManager.warning("Please input vaild Metamask address.");
+      return;
     }
     if (password !== repassword) {
       NotificationManager.error("Password should be equal with Re - password.");
+      return;
     }
     if (password.length < 8) {
       NotificationManager.warning(
         "Length of password should be biger equal or more than 8 characters."
       );
+      return;
     }
 
     //test phone, wallet
