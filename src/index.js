@@ -22,43 +22,41 @@ import isEmpty from "./validation/isEmpty";
 
 smoothScrollPolyfill.polyfill();
 
-  const setCurrentUserInfoById = (userId) =>{ 
-    let filter = userId ? '/'+userId : '';
-    axios.get(`${BACKEND_URL}/api/user/${filter}`, {}, {
+const setCurrentUserInfoById = (userId) => {
+  let filter = userId ? '/' + userId : '';
+  axios.get(`${BACKEND_URL}/api/user/${filter}`, {}, {
     headers: {
-      "Authorization": "Bearer "+localStorage.getItem("jwtToken") , // <- Don't forget Authorization header if you are using it.
+      "Authorization": "Bearer " + localStorage.getItem("jwtToken"), // <- Don't forget Authorization header if you are using it.
     }
-    })
+  })
     .then(function (response) {
       store.dispatch(setCurrentUserAction(response.data));
     })
     .catch(function (error) {
       console.log(error);
     })
-  }  
+}
 
-  if(!isEmpty(localStorage.getItem("jwtToken")))
-  {
-    const decoded = jwt_decode(localStorage.getItem("jwtToken"));
-    const currTime = Date.now() / 1000;
-    if(decoded.app < currTime)
-    {
-      store.dispatch(cleanCurrentUser());
-      localStorage.removeItem("jwtToken");
-    }
-    else{   
-      setCurrentUserInfoById(decoded.id);
-    }
+if (!isEmpty(localStorage.getItem("jwtToken"))) {
+  const decoded = jwt_decode(localStorage.getItem("jwtToken"));
+  const currTime = Date.now() / 1000;
+  if (decoded.app < currTime) {
+    store.dispatch(cleanCurrentUser());
+    localStorage.removeItem("jwtToken");
   }
-  
-  var socket = io(`${BACKEND_URL}`);
-  
+  else {
+    setCurrentUserInfoById(decoded.id);
+  }
+}
+
+var socket = io(`${BACKEND_URL}`);
+
 function Index() {
   const ref = useQueryParam("ref");
   const regexForWallet = /^(0x[a-fA-F0-9]{40})$/gm;
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     if (ref !== undefined) {
       let m;
@@ -83,19 +81,18 @@ function Index() {
       once: true,
     });
     AOS.refresh();
-    
-    socket.on("UpdateStatus", data => {  
-        if (data.type === "winners") {
-          if(data.winners.includes(user?.wallet)) 
-          {
-            NotificationManager.success("You are a winner!", "Congratulations");              
-            dispatch(setConteffiflag(true));
-          }
+
+    socket.on("UpdateStatus", data => {
+      if (data.type === "winners") {
+        if (data.winners.includes(user?.wallet)) {
+          NotificationManager.success("You are a winner!", "Congratulations");
+          dispatch(setConteffiflag(true));
         }
-        else if(data.type === "victims") {
-            if(data.victims.includes(user?.wallet)) NotificationManager.warning("Ops. You are a victim.", "Information");
-        }
-    });  
+      }
+      else if (data.type === "victims") {
+        if (data.victims.includes(user?.wallet)) NotificationManager.warning("Ops. You lost.", "Information");
+      }
+    });
   }, []);
 
   return (
