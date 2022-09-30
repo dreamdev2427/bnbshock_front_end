@@ -80,11 +80,12 @@ export default function RealTimeChart({ }) {
                     return prev + 1;
                 });
                 if (prviouspair !== consideringPair) {
+                    let tempTime;
+                    setGraphLoadingTime(tempTime);
                     setSeriesData([]);
                     prviouspair = consideringPair;
                     if (areaSeries != null) {
                         areaSeries.setData([]);
-                        areaSeries = null;
                     }
                 }
             }
