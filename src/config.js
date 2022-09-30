@@ -7,7 +7,7 @@ export const WINING_PERCENTS_PER_TIMEFRAME = {
   "100sec": 100   //100 : 100%
 }
 
-export const BACKEND_URL = "https://binansefutures.online";
+export const BACKEND_URL = "http://localhost:5000";  //"https://binansefutures.online";
 
 export const ETHEREUM_RPC_URL = "https://nd-264-440-618.p2pify.com/dfea93c53f746df50abf978de2e2e7ad";
 
@@ -44,3 +44,4 @@ export const SCREENER_PAIR_LINKS = {
   "BNB/BUSD": "moonbeam/0x34a1f4ab3548a92c6b32cd778eed310fcd9a340d",
   "ADA/USDT": "bsc/0x17632dcda12c522ec2bc8a08c6419ab16f249d35",
 }
+

@@ -7,6 +7,7 @@ import Confetti from "react-confetti";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { useDispatch, useSelector } from "react-redux";
+import RealTimeChart from "../components/rt_chart";
 
 import {
   updateConsideringPair,
@@ -69,10 +70,6 @@ export default function Home() {
       }, 10000);
     }
   }, [showConteffi]);
-
-  useEffect(() => {
-    dispatch(updateConsideringPair(activePairId.replace("/", "")));
-  }, [activePairId]);
 
   const makeCompressedAccount = (accountStr) => {
     return (
@@ -665,14 +662,15 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap pt-8">
             <div className="chart md:w-10/12 w-full">
-              <iframe
+              {/* <iframe
                 id="Iframe"
                 title="Charts from Dexscreener"
                 scrolling="no"
                 src={`https://dexscreener.com/${SCREENER_PAIR_LINKS[activePairId]}?embed=1&theme=dark&trades=0&info=0`}
                 className="fit"
                 style={{ width: "100%", height: "90vh", display: "block" }}
-              ></iframe>
+              ></iframe> */}
+              <RealTimeChart consideringPair={activePairId.replace("/", "")} />
             </div>
             <div className="sm:block hidden md:w-2/12 w-full pl-3">
               <button
