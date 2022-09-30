@@ -9,16 +9,10 @@ export default function RealTimeChart({ consideringPair }) {
     const [updateInterval, setUpdateInterval] = useState(0);
     const [pairPrice, setPairPrice] = useState(0);
     const [graphLoadingTime, setGraphLoadingTime] = useState(new Date());
-    const [refresh, setRefresh] = useState(false);
-    const [prevRefresh, setPrevRefresh] = useState(false);
 
     useEffect(() => {
         init();
     }, []);
-
-    useEffect(() => {
-        setRefresh(!refresh);
-    }, [consideringPair]);
 
     useEffect(() => {
         if (pairPrice == 0) {
@@ -32,7 +26,7 @@ export default function RealTimeChart({ consideringPair }) {
         if (areaSeries != null) {
             areaSeries.setData(prevdata);
         }
-    }, [pairPrice]);
+    }, [updateInterval]);
 
     const init = useCallback(() => {
         var chart = createChart(document.getElementById("chart1"), {
@@ -69,14 +63,7 @@ export default function RealTimeChart({ consideringPair }) {
             })
         );
 
-        const getData = async function () {
-            if (refresh !== prevRefresh) {
-                setSeriesData([]);
-                setGraphLoadingTime(new Date());
-                areaSeries.setData([]);
-                setPairPrice(0);
-                setPrevRefresh(refresh);
-            }
+        const getData = async function (consideringPair) {
             let binanceResponse = await axios.get(
                 "https://api.binance.com/api/v3/ticker/price"
             );
@@ -90,12 +77,12 @@ export default function RealTimeChart({ consideringPair }) {
             setUpdateInterval((prev) => {
                 return prev + 1;
             });
-            setTimeout(getData, 2000);
+            setTimeout(getData(consideringPair), 2000);
         }
         setTimeout(() => {
-            getData();
+            getData(consideringPair);
         }, 10);
-    }, []);
+    }, [consideringPair]);
 
     return (
         <div className="App">
