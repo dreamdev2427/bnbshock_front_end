@@ -3,7 +3,7 @@ import { createChart } from "lightweight-charts";
 import moment from 'moment';
 import axios from "axios";
 
-export default function RealTimeChart({ consideringPair }) {
+export default function RealTimeChart({ }) {
     const [areaSeries, setArea] = useState(null);
     const [data, setSeriesData] = useState([]);
     const [updateInterval, setUpdateInterval] = useState(0);
@@ -62,27 +62,38 @@ export default function RealTimeChart({ consideringPair }) {
                 lineWidth: 2
             })
         );
-
-        const getData = async function (consideringPair) {
-            let binanceResponse = await axios.get(
-                "https://api.binance.com/api/v3/ticker/price"
-            );
-            let currentPrices = binanceResponse?.data ? binanceResponse.data : [];
-            console.log("activePair = ", consideringPair)
-            let pairPrice =
-                currentPrices.find(
-                    (item) => item.symbol === consideringPair
-                )?.price || 0;
-            setPairPrice(pairPrice);
-            setUpdateInterval((prev) => {
-                return prev + 1;
-            });
-            setTimeout(getData(consideringPair), 2000);
+        let prviouspair = "BTCUSDT";
+        const getData = async function () {
+            let consideringPair = localStorage.getItem("pairId");
+            if (consideringPair) {
+                let binanceResponse = await axios.get(
+                    "https://api.binance.com/api/v3/ticker/price"
+                );
+                let currentPrices = binanceResponse?.data ? binanceResponse.data : [];
+                console.log("activePair = ", consideringPair)
+                let pairPrice =
+                    currentPrices.find(
+                        (item) => item.symbol === consideringPair
+                    )?.price || 0;
+                setPairPrice(pairPrice);
+                setUpdateInterval((prev) => {
+                    return prev + 1;
+                });
+                if (prviouspair !== consideringPair) {
+                    setSeriesData([]);
+                    prviouspair = consideringPair;
+                    if (areaSeries != null) {
+                        areaSeries.setData([]);
+                        areaSeries = null;
+                    }
+                }
+            }
+            setTimeout(getData(), 2000);
         }
         setTimeout(() => {
-            getData(consideringPair);
+            getData();
         }, 10);
-    }, [consideringPair]);
+    }, []);
 
     return (
         <div className="App">

@@ -61,6 +61,7 @@ export default function Home() {
   useEffect(() => {
     //check login
     if (isEmpty(globalUser)) navigate("/login");
+    localStorage.setItem("pairId", "BTCUSDT");
   }, []);
 
   useEffect(() => {
@@ -338,6 +339,11 @@ export default function Home() {
     if (isNaN(Number(inputStr)) === false) setAmount(Number(inputStr));
   };
 
+  const seletPair = (pairStr) => {
+    setActivePairId(pairStr);
+    localStorage.setItem("pairId", pairStr.replace("/", ""));
+  };
+
   return (
     <div className="home h-screen">
       {/* sidebar */}
@@ -427,7 +433,7 @@ export default function Home() {
                         text-gray-100 transition-colors duration-300
                         hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("BTC/USDT");
+                            seletPair("BTC/USDT");
                             setActivePairIcon("/images/btc.svg");
                             setCurrency(!currency);
                           }}
@@ -450,7 +456,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("ETH/USDT");
+                            seletPair("ETH/USDT");
                             setActivePairIcon("/images/eth.svg");
                             setCurrency(!currency);
                           }}
@@ -473,7 +479,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("ETC/USDT");
+                            seletPair("ETC/USDT");
                             setActivePairIcon("/images/etc.svg");
                             setCurrency(!currency);
                           }}
@@ -496,7 +502,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("LTC/USDT");
+                            seletPair("LTC/USDT");
                             setActivePairIcon("/images/ltc.svg");
                             setCurrency(!currency);
                           }}
@@ -519,7 +525,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("BCH/USDT");
+                            seletPair("BCH/USDT");
                             setActivePairIcon("/images/bch.svg");
                             setCurrency(!currency);
                           }}
@@ -542,7 +548,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("XMR/WETH");
+                            seletPair("XMR/WETH");
                             setActivePairIcon("/images/xmr.svg");
                             setCurrency(!currency);
                           }}
@@ -565,7 +571,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("EOS/USDT");
+                            seletPair("EOS/USDT");
                             setActivePairIcon("/images/eos.svg");
                             setCurrency(!currency);
                           }}
@@ -588,7 +594,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("BNB/BUSD");
+                            seletPair("BNB/BUSD");
                             setActivePairIcon("/images/bnb.svg");
                             setCurrency(!currency);
                           }}
@@ -611,7 +617,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("XRP/USDT");
+                            seletPair("XRP/USDT");
                             setActivePairIcon("/images/xrp.svg");
                             setCurrency(!currency);
                           }}
@@ -634,7 +640,7 @@ export default function Home() {
                           text-gray-100 transition-colors duration-300
                           hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
-                            setActivePairId("ADA/USDT");
+                            seletPair("ADA/USDT");
                             setActivePairIcon("icons/ada.svg");
                             setCurrency(!currency);
                           }}
