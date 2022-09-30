@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { createChart } from "lightweight-charts";
-import { useSelector } from "react-redux";
 import moment from 'moment';
 import axios from "axios";
 
@@ -9,37 +8,16 @@ export default function RealTimeChart({ consideringPair }) {
     const [data, setSeriesData] = useState([]);
     const [updateInterval, setUpdateInterval] = useState(0);
     const [pairPrice, setPairPrice] = useState(0);
-    const [aictvePair, setActivePair] = useState("BTCUSDT");
     const [graphLoadingTime, setGraphLoadingTime] = useState(new Date());
-    const [timer, setTimer] = useState(-1);
+    const [refresh, setRefresh] = useState(false);
+    const [prevRefresh, setPrevRefresh] = useState(false);
 
     useEffect(() => {
         init();
-        let interval = 0;
-        interval = setInterval(() => {
-            getData();
-            setTimer(interval);
-        }, 2000);
-        return () => {
-            if (timer > 0) clearInterval(timer);
-        }
     }, []);
 
     useEffect(() => {
-        console.log("consideringPair = ", consideringPair);
-        if (timer > 0) clearInterval(timer);
-        setSeriesData([]);
-        setGraphLoadingTime(new Date());
-        areaSeries.setData([]);
-        setPairPrice(0);
-        setActivePair(consideringPair);
-        setTimeout(() => {
-            let interval = 0;
-            interval = setInterval(() => {
-                getData();
-                setTimer(interval);
-            }, 2000);
-        }, 500);
+        setRefresh(!refresh);
     }, [consideringPair]);
 
     useEffect(() => {
@@ -54,24 +32,7 @@ export default function RealTimeChart({ consideringPair }) {
         if (areaSeries != null) {
             areaSeries.setData(prevdata);
         }
-    }, [updateInterval, pairPrice]);
-
-    const getData = async function () {
-        let binanceResponse = await axios.get(
-            "https://api.binance.com/api/v3/ticker/price"
-        );
-        let currentPrices = binanceResponse?.data ? binanceResponse.data : [];
-        console.log("activePair = ", aictvePair)
-        let pairPrice =
-            currentPrices.find(
-                (item) => item.symbol === aictvePair
-            )?.price || 0;
-        setPairPrice(pairPrice);
-        setUpdateInterval((prev) => {
-            return prev + 1;
-        });
-        setTimeout(getData, 2000);
-    }
+    }, [pairPrice]);
 
     const init = useCallback(() => {
         var chart = createChart(document.getElementById("chart1"), {
@@ -107,6 +68,33 @@ export default function RealTimeChart({ consideringPair }) {
                 lineWidth: 2
             })
         );
+
+        const getData = async function () {
+            if (refresh !== prevRefresh) {
+                setSeriesData([]);
+                setGraphLoadingTime(new Date());
+                areaSeries.setData([]);
+                setPairPrice(0);
+                setPrevRefresh(refresh);
+            }
+            let binanceResponse = await axios.get(
+                "https://api.binance.com/api/v3/ticker/price"
+            );
+            let currentPrices = binanceResponse?.data ? binanceResponse.data : [];
+            console.log("activePair = ", consideringPair)
+            let pairPrice =
+                currentPrices.find(
+                    (item) => item.symbol === consideringPair
+                )?.price || 0;
+            setPairPrice(pairPrice);
+            setUpdateInterval((prev) => {
+                return prev + 1;
+            });
+            setTimeout(getData, 2000);
+        }
+        setTimeout(() => {
+            getData();
+        }, 10);
     }, []);
 
     return (
