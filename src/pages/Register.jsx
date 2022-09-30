@@ -75,7 +75,11 @@ export default function Register() {
           error.response.data.message
         )
           NotificationManager.error(error.response.data.message, "Error");
-        else NotificationManager.error("Internal Server Error", "Error");
+        else
+          NotificationManager.error(
+            "Please check connection to server",
+            "Error"
+          );
       });
   };
 

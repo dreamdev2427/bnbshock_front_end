@@ -129,7 +129,11 @@ export default function SideBar() {
           error.response.data.message
         )
           NotificationManager.error(error.response.data.message, "Error");
-        else NotificationManager.error("Internal Server Error", "Error");
+        else
+          NotificationManager.error(
+            "Please check connection with server",
+            "Error"
+          );
       });
   };
 
@@ -215,7 +219,11 @@ export default function SideBar() {
           error.response.data.message
         )
           NotificationManager.error(error.response.data.message, "Error");
-        else NotificationManager.error("Internal Server Error", "Error");
+        else
+          NotificationManager.error(
+            "Please check connection to server",
+            "Error"
+          );
       });
   };
 
