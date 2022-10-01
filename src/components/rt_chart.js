@@ -10,20 +10,16 @@ export default function RealTimeChart({ }) {
     const [updateInterval, setUpdateInterval] = useState(0);
     const [pairPrice, setPairPrice] = useState(0);
     const [graphLoadingTime, setGraphLoadingTime] = useState(new Date());
-    const [prviouspair, setPrevPair] = useState("BTCUSDT");
-    const [timerID, setTimerId] = useState(-1);
 
     useEffect(() => {
         init();
-        return () => { if (timerID > 0) clearInterval(timerID); }
+
     }, []);
 
     useEffect(() => {
         if (pairPrice == 0) {
             return;
         }
-        let consideringPair = localStorage.getItem("pairId");
-        console.log("consideringPair = ", consideringPair)
         let prevdata = data;
         let tempTime = new Date(graphLoadingTime.setDate(graphLoadingTime.getDate() + 1));
         prevdata.push({ time: moment(tempTime).format("YYYY-MM-DD"), value: Number(pairPrice) });
@@ -31,15 +27,6 @@ export default function RealTimeChart({ }) {
         setSeriesData(prevdata);
         if (areaSeries != null) {
             areaSeries.setData(prevdata);
-        }
-        if (prviouspair !== consideringPair) {
-            let tempTime;
-            setGraphLoadingTime(tempTime);
-            setSeriesData([]);
-            setPrevPair(consideringPair);
-            if (areaSeries != null) {
-                areaSeries.setData([]);
-            }
         }
     }, [updateInterval]);
 
@@ -77,35 +64,41 @@ export default function RealTimeChart({ }) {
                 lineWidth: 2
             })
         );
+        let prviouspair = "BTCUSDT";
+        let tempTime = new Date().getTime();
         const getData = async function () {
-            let consideringPair = localStorage.getItem("pairId");
-            console.log("consideringPair = ", consideringPair)
-            let binanceResponse = await axios.get(
-                `${BACKEND_URL}/api/price/pairPrice`
-            );
-            let currentPrices = binanceResponse?.data ? binanceResponse.data.pairPrices : [];
-            let pairPrice =
-                currentPrices.find(
-                    (item) => item.symbol === consideringPair
-                )?.price || 0;
-            setPairPrice(pairPrice);
-            setUpdateInterval((prev) => {
-                return prev + 1;
-            });
-            if (prviouspair !== consideringPair) {
-                let tempTime;
-                setGraphLoadingTime(tempTime);
-                setSeriesData([]);
-                setPrevPair(consideringPair);
-                if (areaSeries != null) {
-                    areaSeries.setData([]);
+            if (new Date().getTime() - tempTime > 1000) {
+                let consideringPair = localStorage.getItem("pairId");
+                if (consideringPair) {
+                    let binanceResponse = await axios.post(
+                        `${BACKEND_URL}/api/price/pairPrice`,
+                        {
+                            pairId: consideringPair
+                        }, {}
+                    );
+                    console.log("binanceResponse = ", binanceResponse);
+                    let pairPrice = binanceResponse?.data ? binanceResponse.data.pairPrice : 0;
+                    console.log("activePair = ", consideringPair);
+                    setPairPrice(pairPrice);
+                    setUpdateInterval((prev) => {
+                        return prev + 1;
+                    });
+                    tempTime = new Date().getTime();
+                    if (prviouspair !== consideringPair) {
+                        let tempTime;
+                        setGraphLoadingTime(tempTime);
+                        setSeriesData([]);
+                        prviouspair = consideringPair;
+                        if (areaSeries != null) {
+                            areaSeries.setData([]);
+                        }
+                    }
                 }
             }
         }
-        let interval = setInterval(() => {
+        setInterval(() => {
             getData()
-        }, 2000);
-        setTimerId(interval);
+        }, 1000);
     }, []);
 
     return (
