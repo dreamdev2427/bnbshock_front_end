@@ -22,15 +22,14 @@ export default function RealTimeChart({ }) {
             return;
         }
         let consideringPair = localStorage.getItem("pairId");
+        console.log("consideringPair = ", consideringPair)
         let prevdata = data;
         let tempTime = new Date(graphLoadingTime.setDate(graphLoadingTime.getDate() + 1));
-        if (prviouspair === consideringPair) {
-            prevdata.push({ time: moment(tempTime).format("YYYY-MM-DD"), value: Number(pairPrice) });
-            setGraphLoadingTime(tempTime);
-            setSeriesData(prevdata);
-            if (areaSeries != null) {
-                areaSeries.setData(prevdata);
-            }
+        prevdata.push({ time: moment(tempTime).format("YYYY-MM-DD"), value: Number(pairPrice) });
+        setGraphLoadingTime(tempTime);
+        setSeriesData(prevdata);
+        if (areaSeries != null) {
+            areaSeries.setData(prevdata);
         }
         if (prviouspair !== consideringPair) {
             let tempTime;
@@ -79,34 +78,32 @@ export default function RealTimeChart({ }) {
         );
         const getData = async function () {
             let consideringPair = localStorage.getItem("pairId");
-            console.log("activePair = ", consideringPair)
-            if (consideringPair) {
-                let binanceResponse = await axios.get(
-                    `${BACKEND_URL}/api/price/pairPrice`
-                );
-                let currentPrices = binanceResponse?.data ? binanceResponse.data.pairPrices : [];
-                let pairPrice =
-                    currentPrices.find(
-                        (item) => item.symbol === consideringPair
-                    )?.price || 0;
-                setPairPrice(pairPrice);
-                setUpdateInterval((prev) => {
-                    return prev + 1;
-                });
-                if (prviouspair !== consideringPair) {
-                    let tempTime;
-                    setGraphLoadingTime(tempTime);
-                    setSeriesData([]);
-                    setPrevPair(consideringPair);
-                    if (areaSeries != null) {
-                        areaSeries.setData([]);
-                    }
+            console.log("consideringPair = ", consideringPair)
+            let binanceResponse = await axios.get(
+                `${BACKEND_URL}/api/price/pairPrice`
+            );
+            let currentPrices = binanceResponse?.data ? binanceResponse.data.pairPrices : [];
+            let pairPrice =
+                currentPrices.find(
+                    (item) => item.symbol === consideringPair
+                )?.price || 0;
+            setPairPrice(pairPrice);
+            setUpdateInterval((prev) => {
+                return prev + 1;
+            });
+            if (prviouspair !== consideringPair) {
+                let tempTime;
+                setGraphLoadingTime(tempTime);
+                setSeriesData([]);
+                setPrevPair(consideringPair);
+                if (areaSeries != null) {
+                    areaSeries.setData([]);
                 }
             }
         }
         setInterval(() => {
             getData()
-        }, 1000);
+        }, 2000);
     }, []);
 
     return (
