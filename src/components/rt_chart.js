@@ -71,7 +71,6 @@ export default function RealTimeChart({ }) {
                 let binanceResponse = await axios.get(
                     `${BACKEND_URL}/api/price/pairPrice`
                 );
-                console.log("binanceResponse = ", binanceResponse)
                 let currentPrices = binanceResponse?.data ? binanceResponse.data.pairPrices : [];
                 console.log("activePair = ", consideringPair)
                 let pairPrice =
