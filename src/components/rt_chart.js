@@ -21,7 +21,7 @@ export default function RealTimeChart({ }) {
         if (pairPrice == 0) {
             return;
         }
-        if (new Date().getTime() - prevUpdatedTimeStamp >= 1000) {
+        if (new Date().getTime() - prevUpdatedTimeStamp >= 500) {
             let prevdata = data;
             let tempTime = new Date(graphLoadingTime.setDate(graphLoadingTime.getDate() + 1));
             prevdata.push({ time: moment(tempTime).format("YYYY-MM-DD"), value: Number(pairPrice) });
