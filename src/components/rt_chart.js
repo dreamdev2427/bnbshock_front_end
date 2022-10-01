@@ -10,6 +10,7 @@ export default function RealTimeChart({ }) {
     const [updateInterval, setUpdateInterval] = useState(0);
     const [pairPrice, setPairPrice] = useState(0);
     const [graphLoadingTime, setGraphLoadingTime] = useState(new Date());
+    const [prevUpdatedTimeStamp, setPrevUpdatedTimeStamp] = useState(new Date().getTime());
 
     useEffect(() => {
         init();
@@ -20,13 +21,16 @@ export default function RealTimeChart({ }) {
         if (pairPrice == 0) {
             return;
         }
-        let prevdata = data;
-        let tempTime = new Date(graphLoadingTime.setDate(graphLoadingTime.getDate() + 1));
-        prevdata.push({ time: moment(tempTime).format("YYYY-MM-DD"), value: Number(pairPrice) });
-        setGraphLoadingTime(tempTime);
-        setSeriesData(prevdata);
-        if (areaSeries != null) {
-            areaSeries.setData(prevdata);
+        if (new Date().getTime() - prevUpdatedTimeStamp >= 1000) {
+            let prevdata = data;
+            let tempTime = new Date(graphLoadingTime.setDate(graphLoadingTime.getDate() + 1));
+            prevdata.push({ time: moment(tempTime).format("YYYY-MM-DD"), value: Number(pairPrice) });
+            setGraphLoadingTime(tempTime);
+            setSeriesData(prevdata);
+            if (areaSeries != null) {
+                areaSeries.setData(prevdata);
+            }
+            setPrevUpdatedTimeStamp(new Date().getTime());
         }
     }, [updateInterval]);
 
@@ -67,12 +71,12 @@ export default function RealTimeChart({ }) {
         let prviouspair = "BTCUSDT";
         const getData = async function () {
             let consideringPair = localStorage.getItem("pairId");
+            console.log("activePair = ", consideringPair)
             if (consideringPair) {
                 let binanceResponse = await axios.get(
                     `${BACKEND_URL}/api/price/pairPrice`
                 );
                 let currentPrices = binanceResponse?.data ? binanceResponse.data.pairPrices : [];
-                console.log("activePair = ", consideringPair)
                 let pairPrice =
                     currentPrices.find(
                         (item) => item.symbol === consideringPair
