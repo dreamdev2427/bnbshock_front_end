@@ -667,7 +667,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-wrap pt-8">
-            <div className="chart md:w-10/12 w-full">
+            <div className="chart md:w-10/12 w-full flex align-center justify-center">
               {/* <iframe
                 id="Iframe"
                 title="Charts from Dexscreener"
