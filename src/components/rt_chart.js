@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useState } from "react";
 import { createChart } from "lightweight-charts";
 import moment from 'moment';
 import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 export default function RealTimeChart({ }) {
     const [areaSeries, setArea] = useState(null);
@@ -12,6 +13,7 @@ export default function RealTimeChart({ }) {
 
     useEffect(() => {
         init();
+
     }, []);
 
     useEffect(() => {
@@ -67,9 +69,10 @@ export default function RealTimeChart({ }) {
             let consideringPair = localStorage.getItem("pairId");
             if (consideringPair) {
                 let binanceResponse = await axios.get(
-                    "https://api.binance.com/api/v3/ticker/price"
+                    `${BACKEND_URL}/api/price/pairPrice`
                 );
-                let currentPrices = binanceResponse?.data ? binanceResponse.data : [];
+                console.log("binanceResponse = ", binanceResponse)
+                let currentPrices = binanceResponse?.data ? binanceResponse.data.pairPrices : [];
                 console.log("activePair = ", consideringPair)
                 let pairPrice =
                     currentPrices.find(
@@ -89,11 +92,10 @@ export default function RealTimeChart({ }) {
                     }
                 }
             }
-            setTimeout(getData(), 2000);
         }
-        setTimeout(() => {
-            getData();
-        }, 10);
+        setInterval(() => {
+            getData()
+        }, 1000);
     }, []);
 
     return (
