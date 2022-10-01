@@ -24,11 +24,13 @@ export default function RealTimeChart({ }) {
         let consideringPair = localStorage.getItem("pairId");
         let prevdata = data;
         let tempTime = new Date(graphLoadingTime.setDate(graphLoadingTime.getDate() + 1));
-        prevdata.push({ time: moment(tempTime).format("YYYY-MM-DD"), value: Number(pairPrice) });
-        setGraphLoadingTime(tempTime);
-        setSeriesData(prevdata);
-        if (areaSeries != null) {
-            areaSeries.setData(prevdata);
+        if (prviouspair === consideringPair) {
+            prevdata.push({ time: moment(tempTime).format("YYYY-MM-DD"), value: Number(pairPrice) });
+            setGraphLoadingTime(tempTime);
+            setSeriesData(prevdata);
+            if (areaSeries != null) {
+                areaSeries.setData(prevdata);
+            }
         }
         if (prviouspair !== consideringPair) {
             let tempTime;
