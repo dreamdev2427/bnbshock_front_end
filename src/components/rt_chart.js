@@ -11,10 +11,11 @@ export default function RealTimeChart({ }) {
     const [pairPrice, setPairPrice] = useState(0);
     const [graphLoadingTime, setGraphLoadingTime] = useState(new Date());
     const [prviouspair, setPrevPair] = useState("BTCUSDT");
+    const [timerID, setTimerId] = useState(-1);
 
     useEffect(() => {
         init();
-
+        return () => { if (timerID > 0) clearInterval(timerID); }
     }, []);
 
     useEffect(() => {
@@ -101,9 +102,10 @@ export default function RealTimeChart({ }) {
                 }
             }
         }
-        setInterval(() => {
+        let interval = setInterval(() => {
             getData()
         }, 2000);
+        setTimerId(interval);
     }, []);
 
     return (
