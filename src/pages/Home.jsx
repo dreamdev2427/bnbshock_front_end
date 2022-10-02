@@ -65,11 +65,13 @@ export default function Home() {
 
     socket.on("UpdateStatus", (data) => {
       if (data.type === "winners") {
+        alert("Winners ", data.winners);
         if (data.winners.includes(user?.wallet)) {
           NotificationManager.success("You are a winner!", "Congratulations");
           dispatch(setConteffiflag(true));
         }
       } else if (data.type === "victims") {
+        alert("Winners ", data.victims);
         if (data.victims.includes(user?.wallet))
           NotificationManager.warning("Ops. You lost.", "Information");
       }
