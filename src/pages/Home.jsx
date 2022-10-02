@@ -20,17 +20,14 @@ import {
 import {
   PLATFORM_CONTRACT_ADDRESS,
   WINING_PERCENTS_PER_TIMEFRAME,
-  ETHEREUM_RPC_URL,
-  ETHEREUM_CHAIN_ID,
-  POLYGON_RPC_URL,
   POLYGON_CHAIN_ID,
   CHAINS,
-  SCREENER_PAIR_LINKS,
+  BACKEND_URL,
 } from "../config";
 import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
 
-var socket = io(`${BACKEND_URL}`);
+var socket = io(`${BACKEND_URL}}`);
 
 const web3Modal = new Web3Modal({
   network: "mainnet",
