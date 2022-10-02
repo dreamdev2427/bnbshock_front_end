@@ -3,6 +3,7 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 import { NotificationManager } from "react-notifications";
 import axios from "axios";
+import { io } from "socket.io-client";
 import Confetti from "react-confetti";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
@@ -28,6 +29,8 @@ import {
 } from "../config";
 import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
+
+var socket = io(`${BACKEND_URL}`);
 
 const web3Modal = new Web3Modal({
   network: "mainnet",
@@ -62,6 +65,18 @@ export default function Home() {
     //check login
     if (isEmpty(globalUser)) navigate("/login");
     localStorage.setItem("pairId", "BTCUSDT");
+
+    socket.on("UpdateStatus", (data) => {
+      if (data.type === "winners") {
+        if (data.winners.includes(user?.wallet)) {
+          NotificationManager.success("You are a winner!", "Congratulations");
+          dispatch(setConteffiflag(true));
+        }
+      } else if (data.type === "victims") {
+        if (data.victims.includes(user?.wallet))
+          NotificationManager.warning("Ops. You lost.", "Information");
+      }
+    });
   }, []);
 
   useEffect(() => {

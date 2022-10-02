@@ -15,7 +15,6 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "react-notifications/lib/notifications.css";
 
-import { io } from "socket.io-client";
 import smoothScrollPolyfill from "smoothscroll-polyfill";
 import { BACKEND_URL } from "./config";
 import isEmpty from "./validation/isEmpty";
@@ -49,8 +48,6 @@ if (!isEmpty(localStorage.getItem("jwtToken"))) {
   }
 }
 
-var socket = io(`${BACKEND_URL}`);
-
 function Index() {
   const ref = useQueryParam("ref");
   const regexForWallet = /^(0x[a-fA-F0-9]{40})$/gm;
@@ -82,17 +79,6 @@ function Index() {
     });
     AOS.refresh();
 
-    socket.on("UpdateStatus", data => {
-      if (data.type === "winners") {
-        if (data.winners.includes(user?.wallet)) {
-          NotificationManager.success("You are a winner!", "Congratulations");
-          dispatch(setConteffiflag(true));
-        }
-      }
-      else if (data.type === "victims") {
-        if (data.victims.includes(user?.wallet)) NotificationManager.warning("Ops. You lost.", "Information");
-      }
-    });
   }, []);
 
   return (
