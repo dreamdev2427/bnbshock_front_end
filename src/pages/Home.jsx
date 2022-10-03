@@ -207,7 +207,7 @@ export default function Home() {
       setTimeout(() => {
         readBalance(wallet);
         setGameStarted(true);
-      }, 3000);
+      }, 5000);
       return {
         success: true,
         value: [],
