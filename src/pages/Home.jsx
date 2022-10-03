@@ -68,8 +68,13 @@ export default function Home() {
 
     socket.on("UpdateStatus", (data) => {
       if (data.type === "winners") {
-        if (data.winners.includes(wallet)) {
-          NotificationManager.success("You are a winner!", "Congratulations");
+        let obj = data.winners.find((o) => o.wallet === wallet);
+        if (obj) {
+          NotificationManager.success(
+            `You are a winner!  Previous price ${obj.prev}: , Current price : ${obj.current}`,
+            "Congratulations",
+            10000
+          );
           setGameStarted(false);
           dispatch(setConteffiflag(true));
           setTimeout(() => {
@@ -77,8 +82,13 @@ export default function Home() {
           }, 5000);
         }
       } else if (data.type === "victims") {
-        if (data.victims.includes(wallet)) {
-          NotificationManager.warning("Ops. You lost.", "Information");
+        let obj = data.victims.find((o) => o.wallet === wallet);
+        if (obj) {
+          NotificationManager.warning(
+            `Ops. You lost. Previous price ${obj.prev}: , Current price : ${obj.current}`,
+            "Information",
+            10000
+          );
           setGameStarted(false);
           setTimeout(() => {
             readBalance(wallet);
