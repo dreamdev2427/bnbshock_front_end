@@ -22,11 +22,8 @@ import isEmpty from "./validation/isEmpty";
 smoothScrollPolyfill.polyfill();
 
 const setCurrentUserInfoById = (userId) => {
-  let filter = userId ? '/' + userId : '';
-  axios.get(`${BACKEND_URL}/api/user/${filter}`, {}, {
-    headers: {
-      "Authorization": "Bearer " + localStorage.getItem("jwtToken"), // <- Don't forget Authorization header if you are using it.
-    }
+  axios.get(`${BACKEND_URL}/api/user/getOne`, {}, {
+    _id: userId
   })
     .then(function (response) {
       store.dispatch(setCurrentUserAction(response.data));
