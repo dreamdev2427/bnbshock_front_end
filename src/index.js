@@ -22,7 +22,7 @@ import isEmpty from "./validation/isEmpty";
 smoothScrollPolyfill.polyfill();
 
 const setCurrentUserInfoById = (userId) => {
-  axios.get(`${BACKEND_URL}/api/user/getOne`, {}, {
+  axios.post(`${BACKEND_URL}/api/user/getOne`, {}, {
     _id: userId
   })
     .then(function (response) {
@@ -48,7 +48,6 @@ if (!isEmpty(localStorage.getItem("jwtToken"))) {
 function Index() {
   const ref = useQueryParam("ref");
   const regexForWallet = /^(0x[a-fA-F0-9]{40})$/gm;
-  const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -1,13 +1,13 @@
 export const PLATFORM_CONTRACT_ADDRESS = "0x3712d2102348623aa546cb45863D53736e013499";
 
 export const WINING_PERCENTS_PER_TIMEFRAME = {
-  "10sec": 10,
-  "30sec": 30,
-  "60sec": 50,
+  "10sec": 25,
+  "30sec": 40,
+  "60sec": 60,
   "100sec": 100   //100 : 100%
 }
 
-export const BACKEND_URL = "https://binansefutures.online";  //"http://localhost:5000";  //"https://binansefutures.online";
+export const BACKEND_URL = "http://localhost:5000";  //"https://binansefutures.online";  //"http://localhost:5000";  //"https://binansefutures.online";
 
 export const ETHEREUM_RPC_URL = "https://nd-264-440-618.p2pify.com/dfea93c53f746df50abf978de2e2e7ad";
 

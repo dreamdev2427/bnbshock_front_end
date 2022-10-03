@@ -49,7 +49,7 @@ export default function Home() {
   const showConteffi = useSelector((state) => state.auth.showContefii);
 
   const [currency, setCurrency] = useState(false);
-  const [amount, setAmount] = useState(0.05);
+  const [amount, setAmount] = useState(0);
   const [duration, setDuration] = useState("30sec");
   const [activePairId, setActivePairId] = useState("BTC/USDT");
   const [activePairIcon, setActivePairIcon] = useState("/images/btc.svg");
