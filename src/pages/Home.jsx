@@ -68,9 +68,10 @@ export default function Home() {
 
     socket.on("UpdateStatus", (data) => {
       if (data.type === "winners") {
-        console.log(data.winners);
-        console.log(data.victims);
-        let obj = data.winners.find((o) => o.wallet == user.wallet);
+        console.log(data);
+        let obj = data.winners.find(
+          (o) => o.wallet.toLowerCase() === wallet.toLowerCase()
+        );
         if (obj) {
           NotificationManager.success(
             `You are a winner!  Previous price ${obj.prev}: , Current price : ${obj.current}, prediction: ${obj.upOrDown}`,
@@ -81,21 +82,24 @@ export default function Home() {
         }
         setGameStarted(false);
         setTimeout(() => {
-          readBalance(user.wallet);
+          readBalance(wallet);
         }, 10000);
       } else if (data.type === "victims") {
-        let obj = data.victims.find((o) => o.wallet == user.wallet);
+        console.log(data);
+        let obj = data.victims.find(
+          (o) => o.wallet.toLowerCase() === wallet.toLowerCase()
+        );
         if (obj) {
           NotificationManager.warning(
             `Ops. You lost. Previous price ${obj.prev}: , Current price : ${obj.current}, prediction: ${obj.upOrDown}`,
             "Information",
-            10000
+            15000
           );
         }
         setGameStarted(false);
         setTimeout(() => {
-          readBalance(user.wallet);
-        }, 10000);
+          readBalance(wallet);
+        }, 15000);
       }
     });
   }, []);
@@ -327,13 +331,14 @@ export default function Home() {
 
   const readBalance = async (wallet) => {
     let balance = 0;
-    try {
-      balance = await globalWeb3.eth.getBalance(wallet);
-      balance = globalWeb3.utils.fromWei(balance.toString(), "ether");
-      console.log("balance = ", balance);
-    } catch (err) {
-      console.log("error on catching balance : ", err);
-    }
+    if (globalWeb3 && globalWeb3.eth)
+      try {
+        balance = await globalWeb3.eth.getBalance(wallet);
+        balance = globalWeb3.utils.fromWei(balance.toString(), "ether");
+        console.log("balance = ", balance);
+      } catch (err) {
+        console.log("error on catching balance : ", err);
+      }
     setWalletBalance(Number(balance).toFixed(3));
     return balance;
   };
