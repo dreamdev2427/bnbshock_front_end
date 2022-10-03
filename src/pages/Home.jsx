@@ -30,21 +30,6 @@ const platformABI = require("../assets/abi/platform.json");
 
 var socket = io(`${BACKEND_URL}`);
 
-socket.on("UpdateStatus", (data) => {
-  alert("Won | lost ", data);
-  let wallet = store.getState().auth.user.wallet;
-  if (data.type === "winners") {
-    if (data.winners.includes(wallet)) {
-      NotificationManager.success("You are a winner!", "Congratulations");
-      store.dispatch(setConteffiflag(true));
-    }
-  } else if (data.type === "victims") {
-    if (data.victims.includes(wallet)) {
-      NotificationManager.warning("Ops. You lost.", "Information");
-    }
-  }
-});
-
 const web3Modal = new Web3Modal({
   network: "mainnet",
   cachProvider: true,
@@ -80,7 +65,6 @@ export default function Home() {
     localStorage.setItem("pairId", "BTCUSDT");
 
     socket.on("UpdateStatus", (data) => {
-      alert("Winners ", data);
       if (data.type === "winners") {
         if (data.winners.includes(user?.wallet)) {
           NotificationManager.success("You are a winner!", "Congratulations");
