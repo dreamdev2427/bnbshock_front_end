@@ -58,6 +58,7 @@ export default function Home() {
   const [web3Provider, setWeb3Provider] = useState({});
   const [walletBalance, setWalletBalance] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
+  const [showDownCounts, setShowDownCounts] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -83,6 +84,7 @@ export default function Home() {
           dispatch(setConteffiflag(true));
         }
         setGameStarted(false);
+        setShowDownCounts(false);
         setTimeout(() => {
           readBalance(globalUser?.wallet);
         }, 10000);
@@ -101,6 +103,7 @@ export default function Home() {
           );
         }
         setGameStarted(false);
+        setShowDownCounts(false);
         setTimeout(() => {
           readBalance(globalUser?.wallet);
         }, 15000);
@@ -261,8 +264,10 @@ export default function Home() {
           NotificationManager.error(result.message, "Fail", 10000, () => {});
           setGameStarted(false);
         }
-        if (result.success === true)
+        if (result.success === true) {
+          setShowDownCounts(true);
           NotificationManager.success("Entered !!.", "Information", 5000);
+        }
       } catch (error) {
         console.log(error);
         setGameStarted(false);
@@ -291,12 +296,8 @@ export default function Home() {
           setGameStarted(false);
         }
         if (result.success === true) {
-          // NotificationManager.success("", 'Succeed', 5000, async () => {
-          //   updateEntries();
-          // });
-          // setTimeout(async () => {
-          //   updateEntries();
-          // }, 2000);
+          setShowDownCounts(true);
+          NotificationManager.success("Entered !!.", "Information", 5000);
         }
       } catch (error) {
         setGameStarted(false);
@@ -913,7 +914,7 @@ export default function Home() {
                   </code>
                 </div>
               </div>
-              {gameStarted === true && (
+              {showDownCounts === true && (
                 <Countdown360
                   backgroundColor="#109999"
                   fontColor="#fff"
