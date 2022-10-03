@@ -28,7 +28,7 @@ import {
 import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
 
-var socket = io(`${BACKEND_URL}}`);
+var socket = io(`${BACKEND_URL}`);
 
 socket.on("UpdateStatus", (data) => {
   alert("Won | lost ", data);
