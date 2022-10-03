@@ -70,7 +70,9 @@ export default function Home() {
       if (data.type === "winners") {
         console.log(data);
         let obj = data.winners.find(
-          (o) => o.wallet.toLowerCase() === wallet.toLowerCase()
+          (o) =>
+            o.wallet.toString().toLowerCase() ===
+            user.wallet.toString().toLowerCase()
         );
         if (obj) {
           NotificationManager.success(
@@ -82,12 +84,14 @@ export default function Home() {
         }
         setGameStarted(false);
         setTimeout(() => {
-          readBalance(wallet);
+          readBalance(user.wallet);
         }, 10000);
       } else if (data.type === "victims") {
         console.log(data);
         let obj = data.victims.find(
-          (o) => o.wallet.toLowerCase() === wallet.toLowerCase()
+          (o) =>
+            o.wallet.toString().toLowerCase() ===
+            user.wallet.toString().toLowerCase()
         );
         if (obj) {
           NotificationManager.warning(
@@ -98,7 +102,7 @@ export default function Home() {
         }
         setGameStarted(false);
         setTimeout(() => {
-          readBalance(wallet);
+          readBalance(user.wallet);
         }, 15000);
       }
     });
