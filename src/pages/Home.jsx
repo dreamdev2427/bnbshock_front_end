@@ -72,7 +72,7 @@ export default function Home() {
         let obj = data.winners.find(
           (o) =>
             o.wallet.toString().toLowerCase() ===
-            user.wallet.toString().toLowerCase()
+            globalUser?.wallet.toString().toLowerCase()
         );
         if (obj) {
           NotificationManager.success(
@@ -84,14 +84,14 @@ export default function Home() {
         }
         setGameStarted(false);
         setTimeout(() => {
-          readBalance(user.wallet);
+          readBalance(globalUser?.wallet);
         }, 10000);
       } else if (data.type === "victims") {
         console.log(data);
         let obj = data.victims.find(
           (o) =>
             o.wallet.toString().toLowerCase() ===
-            user.wallet.toString().toLowerCase()
+            globalUser?.wallet.toString().toLowerCase()
         );
         if (obj) {
           NotificationManager.warning(
@@ -102,7 +102,7 @@ export default function Home() {
         }
         setGameStarted(false);
         setTimeout(() => {
-          readBalance(user.wallet);
+          readBalance(globalUser?.wallet);
         }, 15000);
       }
     });
@@ -254,15 +254,18 @@ export default function Home() {
       if (globalChainId !== POLYGON_CHAIN_ID) {
         switchWalletToANetwork(POLYGON_CHAIN_ID);
       }
+      setGameStarted(true);
       try {
         let result = await onEnterGame(true);
         if (result.success === false) {
           NotificationManager.error(result.message, "Fail", 10000, () => {});
+          setGameStarted(false);
         }
         if (result.success === true)
           NotificationManager.success("Entered !!.", "Information", 5000);
       } catch (error) {
         console.log(error);
+        setGameStarted(false);
       }
     }
   };
@@ -280,10 +283,12 @@ export default function Home() {
       if (globalChainId !== POLYGON_CHAIN_ID) {
         switchWalletToANetwork(POLYGON_CHAIN_ID);
       }
+      setGameStarted(true);
       try {
         let result = await onEnterGame(false);
         if (result.success === false) {
           NotificationManager.error(result.message, "Fail", 5000, () => {});
+          setGameStarted(false);
         }
         if (result.success === true) {
           // NotificationManager.success("", 'Succeed', 5000, async () => {
@@ -294,6 +299,7 @@ export default function Home() {
           // }, 2000);
         }
       } catch (error) {
+        setGameStarted(false);
         return;
       }
     }
