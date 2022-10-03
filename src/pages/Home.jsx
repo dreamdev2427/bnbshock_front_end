@@ -68,6 +68,7 @@ export default function Home() {
 
     socket.on("UpdateStatus", (data) => {
       if (data.type === "winners") {
+        alert(data);
         let obj = data.winners.find((o) => o.wallet === wallet);
         if (obj) {
           NotificationManager.success(
@@ -82,6 +83,7 @@ export default function Home() {
           }, 5000);
         }
       } else if (data.type === "victims") {
+        alert(data);
         let obj = data.victims.find((o) => o.wallet === wallet);
         if (obj) {
           NotificationManager.warning(
