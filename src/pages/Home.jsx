@@ -68,11 +68,12 @@ export default function Home() {
 
     socket.on("UpdateStatus", (data) => {
       if (data.type === "winners") {
-        console.log(data);
-        let obj = data.winners.find((o) => o.wallet == wallet);
+        console.log(data.winners);
+        console.log(data.victims);
+        let obj = data.winners.find((o) => o.wallet == user.wallet);
         if (obj) {
           NotificationManager.success(
-            `You are a winner!  Previous price ${obj.prev}: , Current price : ${obj.current}`,
+            `You are a winner!  Previous price ${obj.prev}: , Current price : ${obj.current}, prediction: ${obj.upOrDown}`,
             "Congratulations",
             10000
           );
@@ -80,22 +81,21 @@ export default function Home() {
         }
         setGameStarted(false);
         setTimeout(() => {
-          readBalance(wallet);
-        }, 5000);
+          readBalance(user.wallet);
+        }, 10000);
       } else if (data.type === "victims") {
-        alert(data);
-        let obj = data.victims.find((o) => o.wallet == wallet);
+        let obj = data.victims.find((o) => o.wallet == user.wallet);
         if (obj) {
           NotificationManager.warning(
-            `Ops. You lost. Previous price ${obj.prev}: , Current price : ${obj.current}`,
+            `Ops. You lost. Previous price ${obj.prev}: , Current price : ${obj.current}, prediction: ${obj.upOrDown}`,
             "Information",
             10000
           );
         }
         setGameStarted(false);
         setTimeout(() => {
-          readBalance(wallet);
-        }, 5000);
+          readBalance(user.wallet);
+        }, 10000);
       }
     });
   }, []);
