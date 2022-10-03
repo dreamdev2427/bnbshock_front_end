@@ -68,17 +68,21 @@ export default function Home() {
 
     socket.on("UpdateStatus", (data) => {
       if (data.type === "winners") {
-        if (data.winners.includes(globalUser?.wallet)) {
+        if (data.winners.includes(wallet)) {
           NotificationManager.success("You are a winner!", "Congratulations");
           setGameStarted(false);
           dispatch(setConteffiflag(true));
-          setTimeout(readBalance(globalUser.wallet), 5000);
+          setTimeout(() => {
+            readBalance(wallet);
+          }, 5000);
         }
       } else if (data.type === "victims") {
-        if (data.victims.includes(globalUser?.wallet)) {
+        if (data.victims.includes(wallet)) {
           NotificationManager.warning("Ops. You lost.", "Information");
           setGameStarted(false);
-          setTimeout(readBalance(globalUser.wallet), 5000);
+          setTimeout(() => {
+            readBalance(wallet);
+          }, 5000);
         }
       }
     });
