@@ -76,12 +76,12 @@ export default function Home() {
             "Congratulations",
             10000
           );
-          setGameStarted(false);
           dispatch(setConteffiflag(true));
-          setTimeout(() => {
-            readBalance(wallet);
-          }, 5000);
         }
+        setGameStarted(false);
+        setTimeout(() => {
+          readBalance(wallet);
+        }, 5000);
       } else if (data.type === "victims") {
         alert(data);
         let obj = data.victims.find((o) => o.wallet === wallet);
@@ -91,11 +91,11 @@ export default function Home() {
             "Information",
             10000
           );
-          setGameStarted(false);
-          setTimeout(() => {
-            readBalance(wallet);
-          }, 5000);
         }
+        setGameStarted(false);
+        setTimeout(() => {
+          readBalance(wallet);
+        }, 5000);
       }
     });
   }, []);
