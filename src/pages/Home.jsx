@@ -5,6 +5,7 @@ import { NotificationManager } from "react-notifications";
 import axios from "axios";
 import { io } from "socket.io-client";
 import Confetti from "react-confetti";
+import { store } from "../store";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +29,21 @@ import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
 
 var socket = io(`${BACKEND_URL}}`);
+
+socket.on("UpdateStatus", (data) => {
+  alert("Won | lost ", data);
+  let wallet = store.getState().auth.user.wallet;
+  if (data.type === "winners") {
+    if (data.winners.includes(wallet)) {
+      NotificationManager.success("You are a winner!", "Congratulations");
+      store.dispatch(setConteffiflag(true));
+    }
+  } else if (data.type === "victims") {
+    if (data.victims.includes(wallet)) {
+      NotificationManager.warning("Ops. You lost.", "Information");
+    }
+  }
+});
 
 const web3Modal = new Web3Modal({
   network: "mainnet",
@@ -64,14 +80,13 @@ export default function Home() {
     localStorage.setItem("pairId", "BTCUSDT");
 
     socket.on("UpdateStatus", (data) => {
+      alert("Winners ", data);
       if (data.type === "winners") {
-        alert("Winners ", data.winners);
         if (data.winners.includes(user?.wallet)) {
           NotificationManager.success("You are a winner!", "Congratulations");
           dispatch(setConteffiflag(true));
         }
       } else if (data.type === "victims") {
-        alert("Winners ", data.victims);
         if (data.victims.includes(user?.wallet))
           NotificationManager.warning("Ops. You lost.", "Information");
       }
