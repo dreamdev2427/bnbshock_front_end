@@ -5,10 +5,10 @@ import { NotificationManager } from "react-notifications";
 import axios from "axios";
 import { io } from "socket.io-client";
 import Confetti from "react-confetti";
-import { store } from "../store";
 import { useNavigate } from "react-router-dom";
-import SideBar from "../components/SideBar";
+import Countdown360 from "react-countdown360";
 import { useDispatch, useSelector } from "react-redux";
+import SideBar from "../components/SideBar";
 import RealTimeChart from "../components/rt_chart";
 
 import {
@@ -57,6 +57,7 @@ export default function Home() {
   const [connected, setConnected] = useState(false);
   const [web3Provider, setWeb3Provider] = useState({});
   const [walletBalance, setWalletBalance] = useState(0);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -67,15 +68,18 @@ export default function Home() {
 
     socket.on("UpdateStatus", (data) => {
       if (data.type === "winners") {
-        if (data.winners.includes(user?.wallet)) {
+        if (data.winners.includes(globalUser?.wallet)) {
           NotificationManager.success("You are a winner!", "Congratulations");
+          setGameStarted(false);
           dispatch(setConteffiflag(true));
-          setTimeout(readBalance(), 5000);
+          setTimeout(readBalance(globalUser.wallet), 5000);
         }
       } else if (data.type === "victims") {
-        if (data.victims.includes(user?.wallet))
+        if (data.victims.includes(globalUser?.wallet)) {
           NotificationManager.warning("Ops. You lost.", "Information");
-        setTimeout(readBalance(), 5000);
+          setGameStarted(false);
+          setTimeout(readBalance(globalUser.wallet), 5000);
+        }
       }
     });
   }, []);
@@ -196,7 +200,10 @@ export default function Home() {
         value: vettingAmount,
       });
 
-      setTimeout(readBalance(), 5000);
+      setTimeout(() => {
+        readBalance(wallet);
+        setGameStarted(true);
+      }, 3000);
       return {
         success: true,
         value: [],
@@ -699,7 +706,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-wrap pt-8">
-            <div className="chart md:w-10/12 w-full">
+            <div className="chart md:w-10/12 w-full ">
               <RealTimeChart consideringPair={activePairId.replace("/", "")} />
             </div>
             <div className="sm:block hidden md:w-2/12 w-full pl-3">
@@ -713,17 +720,14 @@ export default function Home() {
               >
                 {connected !== true ? "Connect Wallet" : compressedAddress}
               </button>
-              {
-                /* for showing BNB balance */
-                <div className="hidden md:block row-span-1 w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 mt-3">
-                  <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">
-                    Balace:
-                    <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">
-                      {walletBalance} BNB
-                    </code>
-                  </div>
+              <div className="hidden md:block row-span-1 w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 mt-3">
+                <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">
+                  Balace:
+                  <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">
+                    {walletBalance} BNB
+                  </code>
                 </div>
-              }
+              </div>
               <div className="hidden md:block form-group relative my-2">
                 <input
                   type="number"
@@ -737,7 +741,6 @@ export default function Home() {
                   Amount BNB
                 </label>
               </div>
-
               <div
                 className="flex space-x-1 rounded-md bg-primary-dark-600 py-2 my-4"
                 role="tablist"
@@ -751,6 +754,7 @@ export default function Home() {
                   }
                   id="headlessui-tabs-tab-27"
                   role="tab"
+                  disabled={gameStarted}
                   type="button"
                   aria-selected="true"
                   tabIndex="0"
@@ -768,6 +772,7 @@ export default function Home() {
                       : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow"
                   }
                   id="headlessui-tabs-tab-28"
+                  disabled={gameStarted}
                   role="tab"
                   type="button"
                   aria-selected="false"
@@ -784,6 +789,7 @@ export default function Home() {
                       ? "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 bg-primary-dark-500 shadow"
                       : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow"
                   }
+                  disabled={gameStarted}
                   role="tab"
                   type="button"
                   aria-selected="false"
@@ -800,6 +806,7 @@ export default function Home() {
                       ? "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 bg-primary-dark-500 shadow"
                       : "w-full rounded-lg py-2.5 px-1 text-sm font-medium leading-5 text-gray-300 shadow"
                   }
+                  disabled={gameStarted}
                   role="tab"
                   type="button"
                   aria-selected="false"
@@ -811,12 +818,12 @@ export default function Home() {
                   100sec
                 </button>
               </div>
-
               <div className="hidden md:block">
                 <div className="row-span-3 grid w-full grid-cols-2 gap-4 px-2 md:flex md:flex-col">
                   <button
                     id="call-button"
                     className="bg-[#389e22] hover:bg-[#44be29] flex h-auto select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-60 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 md:h-14 md:text-xl"
+                    disabled={gameStarted}
                     onClick={() => {
                       onClickConnect();
                       onClickUp();
@@ -842,6 +849,7 @@ export default function Home() {
                   <button
                     id="put-button"
                     className="bg-[#be2944] hover:bg-[#ce2c4a] flex h-auto select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-60 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 md:h-14 md:text-xl"
+                    disabled={gameStarted}
                     onClick={() => {
                       onClickConnect();
                       onClickDown();
@@ -874,6 +882,22 @@ export default function Home() {
                   </code>
                 </div>
               </div>
+              {gameStarted === true && (
+                <Countdown360
+                  backgroundColor="#109999"
+                  fontColor="#fff"
+                  fontFamily="monospace"
+                  fontSize={90}
+                  fontWeight={400}
+                  unitFormatter={(seconds) => (seconds === 1 ? "sec" : "secs")}
+                  borderFillColor="#527b9b"
+                  borderUnfillColor="#e4eE9ec"
+                  borderWidth={60}
+                  smooth
+                  seconds={Number(duration.replace("sec", ""))}
+                  width={300}
+                />
+              )}
             </div>
             <div className="block sm:hidden fixed left-0 bottom-12 w-full bg-black min-h-[30px] px-3 pb-2">
               <div className="md:hidden row-span-1 flex w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 pt-1">

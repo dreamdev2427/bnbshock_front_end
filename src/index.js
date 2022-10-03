@@ -21,18 +21,6 @@ import isEmpty from "./validation/isEmpty";
 
 smoothScrollPolyfill.polyfill();
 
-const setCurrentUserInfoById = (userId) => {
-  axios.post(`${BACKEND_URL}/api/user/getOne`, {}, {
-    _id: userId
-  })
-    .then(function (response) {
-      store.dispatch(setCurrentUserAction(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-}
-
 if (!isEmpty(localStorage.getItem("jwtToken"))) {
   const decoded = jwt_decode(localStorage.getItem("jwtToken"));
   const currTime = Date.now() / 1000;
@@ -41,7 +29,7 @@ if (!isEmpty(localStorage.getItem("jwtToken"))) {
     localStorage.removeItem("jwtToken");
   }
   else {
-    setCurrentUserInfoById(decoded.id);
+    store.dispatch(setCurrentUserAction(decoded._doc));
   }
 }
 
