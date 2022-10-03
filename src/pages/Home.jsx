@@ -68,8 +68,8 @@ export default function Home() {
 
     socket.on("UpdateStatus", (data) => {
       if (data.type === "winners") {
-        alert(data);
-        let obj = data.winners.find((o) => o.wallet === wallet);
+        console.log(data);
+        let obj = data.winners.find((o) => o.wallet == wallet);
         if (obj) {
           NotificationManager.success(
             `You are a winner!  Previous price ${obj.prev}: , Current price : ${obj.current}`,
@@ -84,7 +84,7 @@ export default function Home() {
         }, 5000);
       } else if (data.type === "victims") {
         alert(data);
-        let obj = data.victims.find((o) => o.wallet === wallet);
+        let obj = data.victims.find((o) => o.wallet == wallet);
         if (obj) {
           NotificationManager.warning(
             `Ops. You lost. Previous price ${obj.prev}: , Current price : ${obj.current}`,
