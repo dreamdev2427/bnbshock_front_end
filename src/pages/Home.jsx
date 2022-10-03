@@ -726,7 +726,7 @@ export default function Home() {
               </button>
               <div className="hidden md:block row-span-1 w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 mt-3">
                 <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">
-                  Balace:
+                  Balance:
                   <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">
                     {walletBalance} BNB
                   </code>
