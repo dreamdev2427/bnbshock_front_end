@@ -56,6 +56,7 @@ export default function Home() {
   const [compressedAddress, setCompressedAddress] = useState("");
   const [connected, setConnected] = useState(false);
   const [web3Provider, setWeb3Provider] = useState({});
+  const [walletBalance, setWalletBalance] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -69,10 +70,12 @@ export default function Home() {
         if (data.winners.includes(user?.wallet)) {
           NotificationManager.success("You are a winner!", "Congratulations");
           dispatch(setConteffiflag(true));
+          setTimeout(readBalance(), 5000);
         }
       } else if (data.type === "victims") {
         if (data.victims.includes(user?.wallet))
           NotificationManager.warning("Ops. You lost.", "Information");
+        setTimeout(readBalance(), 5000);
       }
     });
   }, []);
@@ -192,6 +195,8 @@ export default function Home() {
         from: wallet,
         value: vettingAmount,
       });
+
+      setTimeout(readBalance(), 5000);
       return {
         success: true,
         value: [],
@@ -297,10 +302,24 @@ export default function Home() {
     }
   }, [web3Provider, dispatch]);
 
+  const readBalance = async (wallet) => {
+    let balance = 0;
+    try {
+      balance = await globalWeb3.eth.getBalance(wallet);
+      balance = globalWeb3.utils.fromWei(balance.toString(), "ether");
+      console.log("balance = ", balance);
+    } catch (err) {
+      console.log("error on catching balance : ", err);
+    }
+    setWalletBalance(Number(balance).toFixed(3));
+    return balance;
+  };
+
   useEffect(() => {
     if (wallet) {
       setCompressedAddress(makeCompressedAccount(wallet));
       setConnected(true);
+      readBalance(wallet);
     }
   }, [wallet]);
 
@@ -681,14 +700,6 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap pt-8">
             <div className="chart md:w-10/12 w-full">
-              {/* <iframe
-                id="Iframe"
-                title="Charts from Dexscreener"
-                scrolling="no"
-                src={`https://dexscreener.com/${SCREENER_PAIR_LINKS[activePairId]}?embed=1&theme=dark&trades=0&info=0`}
-                className="fit"
-                style={{ width: "100%", height: "90vh", display: "block" }}
-              ></iframe> */}
               <RealTimeChart consideringPair={activePairId.replace("/", "")} />
             </div>
             <div className="sm:block hidden md:w-2/12 w-full pl-3">
@@ -702,6 +713,17 @@ export default function Home() {
               >
                 {connected !== true ? "Connect Wallet" : compressedAddress}
               </button>
+              {
+                /* for showing BNB balance */
+                <div className="hidden md:block row-span-1 w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 mt-3">
+                  <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">
+                    Balace:
+                    <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">
+                      {walletBalance} BNB
+                    </code>
+                  </div>
+                </div>
+              }
               <div className="hidden md:block form-group relative my-2">
                 <input
                   type="number"
@@ -715,22 +737,7 @@ export default function Home() {
                   Amount BNB
                 </label>
               </div>
-              {/* <div className="hidden justify-between gap-2 pt-2 pb-4 md:flex md:flex-row">
-                <div className="group flex grow items-center justify-center rounded-xl bg-primary-dark-700 py-2 transition-all duration-200 hover:bg-primary-dark-600" onClick={() => { setAmount(parseInt(amount) - 1); if (amount === 1) { setAmount(1) } }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true" className="w-4 stroke-gray-300 stroke-[4px] group-hover:stroke-gray-200">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4"></path>
-                  </svg>
-                </div>
-                <div className="group flex grow items-center justify-center rounded-xl bg-primary-dark-700 py-2 transition-all duration-200 hover:bg-primary-dark-600" onClick={() => { setAmount(parseInt(amount) + 1); }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true" className="w-4 stroke-gray-300 stroke-[4px] group-hover:stroke-gray-200">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"></path>
-                  </svg>
-                </div>
-              </div> */}
-              {/* <div className="hidden md:block form-group relative my-2 mt-4">
-                <input type="text" className='w-full py-2 pt-7 px-3 h-[65px] leading-[75px] rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen' onChange={(e) => { setDuration(parseInt(e.target.value)) }} value={duration + 'min'} />
-                <label className='absolute top-[7px] left-[12px] text-gray-700 text-md'>Duration</label>
-              </div> */}
+
               <div
                 className="flex space-x-1 rounded-md bg-primary-dark-600 py-2 my-4"
                 role="tablist"
@@ -804,18 +811,7 @@ export default function Home() {
                   100sec
                 </button>
               </div>
-              {/* <div className="hidden justify-between gap-2 pt-2 pb-4 md:flex md:flex-row">
-                <div className="group flex grow items-center justify-center rounded-xl bg-primary-dark-700 py-2 transition-all duration-200 hover:bg-primary-dark-600" onClick={() => { setDuration(parseInt(duration) - 1); if (duration === 1) { setDuration(1) } }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true" className="w-4 stroke-gray-300 stroke-[4px] group-hover:stroke-gray-200">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4"></path>
-                  </svg>
-                </div>
-                <div className="group flex grow items-center justify-center rounded-xl bg-primary-dark-700 py-2 transition-all duration-200 hover:bg-primary-dark-600" onClick={() => { setDuration(parseInt(duration) + 1); if (duration === 59) { setDuration(59) } }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true" className="w-4 stroke-gray-300 stroke-[4px] group-hover:stroke-gray-200">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"></path>
-                  </svg>
-                </div>
-              </div> */}
+
               <div className="hidden md:block">
                 <div className="row-span-3 grid w-full grid-cols-2 gap-4 px-2 md:flex md:flex-col">
                   <button
@@ -877,7 +873,6 @@ export default function Home() {
                     {WINING_PERCENTS_PER_TIMEFRAME[duration]}%
                   </code>
                 </div>
-                {/* <div className="-mb-1 flex justify-center px-2 text-sm text-gray-100 md:w-full md:text-lg">+$0.42</div> */}
               </div>
             </div>
             <div className="block sm:hidden fixed left-0 bottom-12 w-full bg-black min-h-[30px] px-3 pb-2">

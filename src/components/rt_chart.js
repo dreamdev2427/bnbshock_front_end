@@ -76,9 +76,9 @@ export default function RealTimeChart({ }) {
                             pairId: consideringPair
                         }, {}
                     );
-                    console.log("binanceResponse = ", binanceResponse);
+                    // console.log("binanceResponse = ", binanceResponse);
                     let pairPrice = binanceResponse?.data ? binanceResponse.data.pairPrice : 0;
-                    console.log("activePair = ", consideringPair);
+                    // console.log("activePair = ", consideringPair);
                     setPairPrice(pairPrice);
                     setUpdateInterval((prev) => {
                         return prev + 1;
