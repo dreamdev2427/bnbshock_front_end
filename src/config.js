@@ -13,7 +13,7 @@ export const ETHEREUM_RPC_URL = "https://nd-452-669-968.p2pify.com/b5e5d403fb599
 
 export const ETHEREUM_CHAIN_ID = 5;
 
-export const POLYGON_RPC_URL = "ETHEREUM_RPC_URL";
+export const POLYGON_RPC_URL = "https://nd-452-669-968.p2pify.com/b5e5d403fb599f2ee4e63930263a017b";
 
 export const POLYGON_CHAIN_ID = 3;
 
