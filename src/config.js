@@ -9,11 +9,11 @@ export const WINING_PERCENTS_PER_TIMEFRAME = {
 
 export const BACKEND_URL = "https://binansefutures.online";  //"http://localhost:5000";  //"https://binansefutures.online";
 
-export const ETHEREUM_RPC_URL = "https://nd-264-440-618.p2pify.com/dfea93c53f746df50abf978de2e2e7ad";
+export const ETHEREUM_RPC_URL = "https://nd-452-669-968.p2pify.com/b5e5d403fb599f2ee4e63930263a017b";
 
 export const ETHEREUM_CHAIN_ID = 5;
 
-export const POLYGON_RPC_URL = "https://nd-388-737-093.p2pify.com/29cb4f848dae8ff9dda2f3d4eec1e702";
+export const POLYGON_RPC_URL = "ETHEREUM_RPC_URL";
 
 export const POLYGON_CHAIN_ID = 3;
 
