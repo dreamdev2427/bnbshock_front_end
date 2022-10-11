@@ -477,7 +477,7 @@ export default function SideBar() {
               <path d="M16 13a1 1 0 111.998 0A1 1 0 0116 13z"></path>
             </svg>
             <div className="hidden mt-2 text-primary-dark-100 group-hover:text-gray-300 md:block">
-              Deposit
+              Financial
             </div>
           </div>
           {/* <div id="Support" className="flex flex-col items-center h-12 transition-all duration-100 rounded-md cursor-pointer select-none group md:m-1 md:mt-2 md:h-20 md:py-2 hover:bg-primary-dark-600">
@@ -559,7 +559,7 @@ export default function SideBar() {
                   onClickClaim();
                 }}
               >
-                CLAIM
+                Promotion withdraw
               </button>
             </div>
 
@@ -804,9 +804,7 @@ export default function SideBar() {
         <>
           <div className="profile-menu-content bg-black md:ml-24 fixed sm:w-96 w-80 h-full px-2.5 top-0 left-0 z-50 overflow-y-auto">
             <div className="sticky top-0 flex justify-between py-6 bg-black">
-              <h2 className="text-2xl font-semibold text-white">
-                Deposit funds
-              </h2>
+              <h2 className="text-2xl font-semibold text-white">Financial</h2>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
