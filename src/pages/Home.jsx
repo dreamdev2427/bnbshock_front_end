@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Web3 from "web3";
+import axios from "axios";
 import Web3Modal from "web3modal";
 import { NotificationManager } from "react-notifications";
-import axios from "axios";
 import { io } from "socket.io-client";
 import Confetti from "react-confetti";
 import { useNavigate } from "react-router-dom";
@@ -21,10 +21,10 @@ import {
 import {
   PLATFORM_CONTRACT_ADDRESS,
   WINING_PERCENTS_PER_TIMEFRAME,
-  ROPSTEN_CHAIN_ID,
+  GOERLI_CHAIN_ID,
   CHAINS,
   BACKEND_URL,
-  ROPSTEN_RPC_URL,
+  GOERLI_RPC_URL,
 } from "../config";
 import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
@@ -201,32 +201,32 @@ export default function Home() {
           vettingPeriod = 100;
           break;
       }
-      pairPrice = globalWeb3.utils.toWei(pairPrice.toString(), "ether");
-      vettingAmount = globalWeb3.utils.toWei(amount.toString(), "ether");
-      let funcTrx;
-      if (referralWallet !== undefined)
-        funcTrx = gameContract.methods.enterVetting(
-          activePairId.replace("/", ""),
-          pairPrice,
-          vettingPeriod,
-          upOrdown,
-          referralWallet
-        );
-      else
-        funcTrx = gameContract.methods.enterVettingWithoutRef(
-          activePairId.replace("/", ""),
-          pairPrice,
-          vettingPeriod,
-          upOrdown
-        );
-      await funcTrx.estimateGas({
-        from: wallet,
-        value: vettingAmount,
-      });
-      await funcTrx.send({
-        from: wallet,
-        value: vettingAmount,
-      });
+      try {
+        axios
+          .post(
+            `${BACKEND_URL}/api/EnterVetting/create`,
+            {
+              wallet: wallet,
+              pairId: activePairId,
+              amount: vettingAmount,
+              pairPrice: pairPrice,
+              upOrDown: upOrdown,
+              vettingPeriod: vettingPeriod,
+              referralWallet: referralWallet,
+            },
+            {
+              header: {
+                "x-access-token": localStorage.getItem("jwtToken"),
+              },
+            }
+          )
+          .then(() => {})
+          .catch((err) => {
+            console.log(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
 
       setTimeout(() => {
         readBalance(wallet);
@@ -255,8 +255,8 @@ export default function Home() {
         );
         return;
       }
-      if (globalChainId !== ROPSTEN_CHAIN_ID) {
-        switchWalletToANetwork(ROPSTEN_CHAIN_ID);
+      if (globalChainId !== GOERLI_CHAIN_ID) {
+        switchWalletToANetwork(GOERLI_CHAIN_ID);
       }
       setGameStarted(true);
       try {
@@ -286,8 +286,8 @@ export default function Home() {
         );
         return;
       }
-      if (globalChainId !== ROPSTEN_CHAIN_ID) {
-        switchWalletToANetwork(ROPSTEN_CHAIN_ID);
+      if (globalChainId !== GOERLI_CHAIN_ID) {
+        switchWalletToANetwork(GOERLI_CHAIN_ID);
       }
       setGameStarted(true);
       try {
@@ -344,7 +344,7 @@ export default function Home() {
   const readBalance = async (wallet) => {
     let balance = 0;
     try {
-      const deafultWeb3 = new Web3(ROPSTEN_RPC_URL);
+      const deafultWeb3 = new Web3(GOERLI_RPC_URL);
       balance = await deafultWeb3.eth.getBalance(wallet);
       balance = deafultWeb3.utils.fromWei(balance.toString(), "ether");
       console.log("balance = ", balance);
@@ -399,7 +399,7 @@ export default function Home() {
       }
     } catch (error) {
       setCompressedAddress("");
-      console.error(error);
+      console.log(error);
       setConnected(false);
       dispatch(setConnectedChainId(undefined));
       dispatch(setConnectedWalletAddress(undefined));

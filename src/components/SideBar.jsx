@@ -8,8 +8,8 @@ import axios from "axios";
 import {
   PLATFORM_CONTRACT_ADDRESS,
   BACKEND_URL,
-  ROPSTEN_RPC_URL,
-  ROPSTEN_CHAIN_ID,
+  GOERLI_RPC_URL,
+  GOERLI_CHAIN_ID,
   CHAINS,
 } from "../config";
 import { setCurrentUserAction } from "../store/actions/auth.actions";
@@ -57,8 +57,8 @@ export default function SideBar() {
   };
 
   const getClaimInfo = async () => {
-    let defaultWeb3 = new Web3(ROPSTEN_RPC_URL);
-    if (defaultWeb3 && defaultWeb3.eth.isAddress(user.wallet)) {
+    let defaultWeb3 = new Web3(GOERLI_RPC_URL);
+    if (defaultWeb3 && defaultWeb3.utils.isAddress(user.wallet)) {
       const factory = new defaultWeb3.eth.Contract(
         platformABI,
         PLATFORM_CONTRACT_ADDRESS
@@ -82,7 +82,7 @@ export default function SideBar() {
           );
           setCurrentDeposited(depositedAm);
         } catch (e) {
-          console.error(e);
+          console.log(e);
         }
       }
     }
@@ -117,12 +117,12 @@ export default function SideBar() {
       );
       if (factory) {
         try {
-          await factory.methods.withDrawPlayerFunds(account).send({
+          await factory.methods.withDrawPlayerFunds().send({
             from: account,
           });
           getClaimInfo();
         } catch (err) {
-          console.error(err);
+          console.log(err);
           if (err.code && err.code === 4100)
             NotificationManager.warning(
               "Please unlock your wallet and try again."
@@ -149,7 +149,7 @@ export default function SideBar() {
           });
           getClaimInfo();
         } catch (err) {
-          console.error(err);
+          console.log(err);
           if (err.code && err.code === 4100)
             NotificationManager.warning(
               "Please unlock your wallet and try again."
@@ -379,8 +379,8 @@ export default function SideBar() {
       );
       return;
     }
-    if (chainId !== ROPSTEN_CHAIN_ID) {
-      switchWalletToANetwork(ROPSTEN_CHAIN_ID);
+    if (chainId !== GOERLI_CHAIN_ID) {
+      switchWalletToANetwork(GOERLI_CHAIN_ID);
     }
     try {
       let result = await onDeposit();

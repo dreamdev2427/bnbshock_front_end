@@ -11,6 +11,44 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
+				"name": "newLimit",
+				"type": "uint256"
+			}
+		],
+		"name": "ChangeMaxDepositLimit",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "newLimit",
+				"type": "uint256"
+			}
+		],
+		"name": "ChangeMinDepositLimit",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
 				"name": "newDuration",
 				"type": "uint256"
 			}
@@ -97,8 +135,31 @@
 					}
 				],
 				"indexed": false,
-				"internalType": "struct PairVetting.winner[]",
+				"internalType": "struct PairVetting.player[]",
 				"name": "winners",
+				"type": "tuple[]"
+			},
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "wallet",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "idOnDB",
+						"type": "string"
+					}
+				],
+				"indexed": false,
+				"internalType": "struct PairVetting.player[]",
+				"name": "victims",
 				"type": "tuple[]"
 			}
 		],
@@ -231,8 +292,53 @@
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "wallet",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "withdrawnAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "WithDrawedPlayerFunds",
+		"type": "event"
+	},
+	{
 		"stateMutability": "payable",
 		"type": "fallback"
+	},
+	{
+		"inputs": [],
+		"name": "MAX_DEPOSIT_LIMIT",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "MIN_DEPOSIT_LIMIT",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -256,6 +362,32 @@
 			}
 		],
 		"name": "changeGameManager",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "newAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "changeMaxDepositLimit",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "newAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "changeMinDepositLimit",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -300,6 +432,13 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "depositFunds",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"components": [
@@ -319,8 +458,30 @@
 						"type": "string"
 					}
 				],
-				"internalType": "struct PairVetting.winner[]",
+				"internalType": "struct PairVetting.player[]",
 				"name": "winners",
+				"type": "tuple[]"
+			},
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "wallet",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "idOnDB",
+						"type": "string"
+					}
+				],
+				"internalType": "struct PairVetting.player[]",
+				"name": "victims",
 				"type": "tuple[]"
 			}
 		],
@@ -355,6 +516,11 @@
 				"internalType": "address",
 				"name": "ref",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
 			}
 		],
 		"name": "enterVetting",
@@ -383,24 +549,16 @@
 				"internalType": "bool",
 				"name": "upOrDown",
 				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
 			}
 		],
 		"name": "enterVettingWithoutRef",
 		"outputs": [],
 		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "gameManager",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -413,6 +571,11 @@
 		],
 		"name": "getClaimableInformation",
 		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
 			{
 				"internalType": "uint256",
 				"name": "",
@@ -474,6 +637,13 @@
 			}
 		],
 		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withDrawPlayerFunds",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

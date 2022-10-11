@@ -1,4 +1,4 @@
-export const PLATFORM_CONTRACT_ADDRESS = "0x3712d2102348623aa546cb45863D53736e013499";
+export const PLATFORM_CONTRACT_ADDRESS = "0x4b5626425A62458aa1A5256c75bF678B5e90C2bA";
 
 export const WINING_PERCENTS_PER_TIMEFRAME = {
   "10sec": 25,
@@ -9,19 +9,19 @@ export const WINING_PERCENTS_PER_TIMEFRAME = {
 
 export const BACKEND_URL = "http://localhost:5000";  //"https://binansefutures.online";
 
-export const ETHEREUM_RPC_URL = "https://nd-452-669-968.p2pify.com/b5e5d403fb599f2ee4e63930263a017b";
+export const GOERLI_RPC_URL = "https://nd-854-790-619.p2pify.com/105ea960ed2c627fdc617f1b55c4a203";
 
-export const ETHEREUM_CHAIN_ID = 5;
+export const GOERLI_CHAIN_ID = 5;
 
 export const ROPSTEN_RPC_URL = "https://nd-452-669-968.p2pify.com/b5e5d403fb599f2ee4e63930263a017b";
 
 export const ROPSTEN_CHAIN_ID = 3;
 
 export const CHAINS = {
-  ETHEREUM_CHAIN_ID: {
-    chainId: "0x" + ETHEREUM_CHAIN_ID.toString(16),
+  GOERLI_CHAIN_ID: {
+    chainId: "0x" + GOERLI_CHAIN_ID.toString(16),
     chainName: "Goerli network",
-    rpcUrls: [ETHEREUM_RPC_URL],
+    rpcUrls: [GOERLI_RPC_URL],
     blockExplorerUrls: ["https://goerli.etherscan.io/"]
   },
   ROPSTEN_CHAIN_ID: {
