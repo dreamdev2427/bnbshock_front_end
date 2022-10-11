@@ -677,6 +677,18 @@ export default function Home() {
                 ""
               )}
             </div>
+            <div className="hidden py-2 sm:w-[280px]">
+              <button
+                id="call-button"
+                className="mb-12 bg-[#7064e9] hover:bg-[#7d72ed] flex select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-70 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 h-14 md:text-xl"
+                style={{ width: "100%", textAlign: "center" }}
+                onClick={() => {
+                  connected === true ? onClickDisconnect() : onClickConnect();
+                }}
+              >
+                {connected !== true ? "Connect Wallet" : compressedAddress}
+              </button>
+            </div>
           </div>
           <div className="flex flex-wrap pt-8">
             <div className="w-full chart md:w-10/12 ">
