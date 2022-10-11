@@ -17,6 +17,9 @@ import {
   setConnectedChainId,
   setConnectedWalletAddress,
   setConteffiflag,
+  updateAwardAmount,
+  updateReferalCounts,
+  updateCurrentDeposited,
 } from "../store/actions/auth.actions";
 import {
   PLATFORM_CONTRACT_ADDRESS,
@@ -245,6 +248,37 @@ export default function Home() {
     }
   };
 
+  const getClaimInfo = async (wallet) => {
+    let defaultWeb3 = new Web3(GOERLI_RPC_URL);
+    if (defaultWeb3 && defaultWeb3.utils.isAddress(wallet)) {
+      const factory = new defaultWeb3.eth.Contract(
+        platformABI,
+        PLATFORM_CONTRACT_ADDRESS
+      );
+      if (factory) {
+        try {
+          let claimable =
+            (await factory.methods.getClaimableInformation(wallet).call()) || 0;
+          let gpamount = defaultWeb3.utils.fromWei(
+            claimable[0].toString(),
+            "ether"
+          );
+          dispatch(updateAwardAmount(gpamount));
+          let refCounts = claimable[1] || 0;
+          dispatch(updateReferalCounts(refCounts));
+          let depositedAm = defaultWeb3.utils.fromWei(
+            claimable[3].toString(),
+            "ether"
+          );
+          dispatch(updateCurrentDeposited(depositedAm));
+          console.log(gpamount, refCounts, depositedAm);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    }
+  };
+
   const onClickUp = async () => {
     if (wallet && globalWeb3 && amount > 0) {
       //also check here, the global id is same with logined wallet address
@@ -360,6 +394,7 @@ export default function Home() {
       setCompressedAddress(makeCompressedAccount(wallet));
       setConnected(true);
       readBalance(wallet);
+      getClaimInfo(wallet);
     }
   }, [wallet]);
 

@@ -1,15 +1,18 @@
-import { 
-    AUTH_LOGOUT, 
-    AUTH_SUCCESS, 
-    SET_CHAIN_ID, 
-    UPDATE_WEB3, 
-    UPDATE_USER_BALANCE, 
-    UPDATE_WALLET_STATUS,  
-    SET_WALLET_ADDR, 
-    UPDATE_CURRENT_USER, 
-    UPDATE_REFERAL_ADDRESS, 
+import {
+    AUTH_LOGOUT,
+    AUTH_SUCCESS,
+    SET_CHAIN_ID,
+    UPDATE_WEB3,
+    UPDATE_USER_BALANCE,
+    UPDATE_WALLET_STATUS,
+    SET_WALLET_ADDR,
+    UPDATE_CURRENT_USER,
+    UPDATE_REFERAL_ADDRESS,
     UPDATE_CONSIDERING_PAIR,
-    UPDATE_SHOW_CONTEFFI
+    UPDATE_SHOW_CONTEFFI,
+    UPDATE_AWARD_AMOUNT,
+    UPDATE_REFERRAL_COUNTS,
+    UPDATE_CURRENT_DEPOSITED
 } from "./action.types"
 
 export const authSet = (payload) => dispatch => {
@@ -40,8 +43,7 @@ export const setConnectedChainId = (chainId) => dispatch => {
     })
 }
 
-export const updateBalanceOfUser =  (balance) => dispatch =>
-{
+export const updateBalanceOfUser = (balance) => dispatch => {
     //UPDATE_USER_BALANCE
     dispatch({
         type: UPDATE_USER_BALANCE,
@@ -49,8 +51,7 @@ export const updateBalanceOfUser =  (balance) => dispatch =>
     })
 }
 
-export const setWalletStatus = (status) => dispatch => 
-{
+export const setWalletStatus = (status) => dispatch => {
     dispatch({
         type: UPDATE_WALLET_STATUS,
         payload: status
@@ -78,36 +79,61 @@ export const updateConsideringPair = (pairStr) => dispatch => {
     })
 }
 
-export const logOutUserAction =  () => async (dispatch) => {
+export const logOutUserAction = () => async (dispatch) => {
     dispatch(cleanCurrentUser());
     localStorage.removeItem("jwtToken");
-  }
-  
-  export const cleanCurrentUser = () => async(dispatch) =>{
-    dispatch( {
-      type: UPDATE_CURRENT_USER,
-      payload : {}
+}
+
+export const cleanCurrentUser = () => async (dispatch) => {
+    dispatch({
+        type: UPDATE_CURRENT_USER,
+        payload: {}
     })
-  }
-  
+}
+
 export const setCurrentUserAction = (userInfo) => async (dispatch) => {
     //try to send data to the mongodb, if succeed, then dispatch
-    
-      dispatch({
-        type : UPDATE_CURRENT_USER,
-        payload : userInfo
-      })
-  
-  }
 
-  //UPDATE_SHOW_CONTEFFI
-  
+    dispatch({
+        type: UPDATE_CURRENT_USER,
+        payload: userInfo
+    })
+
+}
+
+//UPDATE_SHOW_CONTEFFI
+
 export const setConteffiflag = flag => dispatch => {
     //try to send data to the mongodb, if succeed, then dispatch
-    
-      dispatch({
-        type : UPDATE_SHOW_CONTEFFI,
-        payload : flag
-      })
-  
-  }
+
+    dispatch({
+        type: UPDATE_SHOW_CONTEFFI,
+        payload: flag
+    })
+
+}
+
+export const updateAwardAmount = amount => dispatch => {
+
+    dispatch({
+        type: UPDATE_AWARD_AMOUNT,
+        payload: amount
+    })
+}
+
+
+export const updateReferalCounts = amount => dispatch => {
+
+    dispatch({
+        type: UPDATE_REFERRAL_COUNTS,
+        payload: amount
+    })
+}
+
+export const updateCurrentDeposited = amount => dispatch => {
+
+    dispatch({
+        type: UPDATE_CURRENT_DEPOSITED,
+        payload: amount
+    })
+}

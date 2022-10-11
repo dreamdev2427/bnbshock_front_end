@@ -1,14 +1,17 @@
-import { 
-    UPDATE_REFERAL_ADDRESS, 
-    UPDATE_WEB3, 
+import {
+    UPDATE_REFERAL_ADDRESS,
+    UPDATE_WEB3,
     SET_CHAIN_ID,
-    SET_WALLET_ADDR, 
-    UPDATE_WALLET_STATUS, 
-    UPDATE_USER_BALANCE, 
-    SET_OTHER_USER_DETAIL, 
-    UPDATE_CURRENT_USER, 
+    SET_WALLET_ADDR,
+    UPDATE_WALLET_STATUS,
+    UPDATE_USER_BALANCE,
+    SET_OTHER_USER_DETAIL,
+    UPDATE_CURRENT_USER,
     UPDATE_CONSIDERING_PAIR,
-    UPDATE_SHOW_CONTEFFI
+    UPDATE_SHOW_CONTEFFI,
+    UPDATE_AWARD_AMOUNT,
+    UPDATE_REFERRAL_COUNTS,
+    UPDATE_CURRENT_DEPOSITED
 } from "../actions/action.types";
 
 const auth = {
@@ -25,12 +28,26 @@ const auth = {
     campaigns: [],
     consideringPairId: "BTCUSDT",
     referralAddress: undefined, //"0x8E4BCCA94eE9ED539D9f1e033d9c949B8D7de6C6"
-    showContefii: false
+    showContefii: false,
+    awardAmount: 0,
+    referralCounts: 0,
+    currentDeposited: 0
 }
 
-export function Auth(state = auth, action) 
-{
+export function Auth(state = auth, action) {
     switch (action.type) {
+        case UPDATE_AWARD_AMOUNT:
+            return {
+                ...state, awardAmount: action.payload
+            }
+        case UPDATE_REFERRAL_COUNTS:
+            return {
+                ...state, referralCounts: action.payload
+            }
+        case UPDATE_CURRENT_DEPOSITED:
+            return {
+                ...state, currentDeposited: action.payload
+            }
         case UPDATE_SHOW_CONTEFFI:
             return {
                 ...state, showContefii: action.payload
@@ -64,16 +81,16 @@ export function Auth(state = auth, action)
             {
                 return { ...state, otherUser: action.payload }
             }
-        case UPDATE_USER_BALANCE:            
+        case UPDATE_USER_BALANCE:
             return { ...state, balance: action.payload };
         case UPDATE_WALLET_STATUS:
-            return {...state, walletStatus: action.payload };
+            return { ...state, walletStatus: action.payload };
         default:
             return { ...state };
     }
 }
 
-export function getGlobalWeb3(state){
+export function getGlobalWeb3(state) {
     return state.auth.globalWeb3;
 }
 

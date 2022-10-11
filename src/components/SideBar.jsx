@@ -12,34 +12,28 @@ import {
   GOERLI_CHAIN_ID,
   CHAINS,
 } from "../config";
-import { setCurrentUserAction } from "../store/actions/auth.actions";
-import isEmpty from "../validation/isEmpty";
 import {
-  updateGlobalWeb3,
-  setConnectedChainId,
-  setConnectedWalletAddress,
+  setCurrentUserAction,
+  updateAwardAmount,
+  updateCurrentDeposited,
+  updateReferalCounts,
 } from "../store/actions/auth.actions";
+import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
-
-const web3Modal = new Web3Modal({
-  network: "mainnet",
-  cachProvider: true,
-  theme: "dark",
-  providerOptions: {},
-});
 
 export default function SideBar() {
   const user = useSelector((state) => state.auth.user);
   const chainId = useSelector((state) => state.auth.currentChainId);
   const account = useSelector((state) => state.auth.currentWallet);
   const globalWeb3 = useSelector((state) => state.auth.globalWeb3);
+  const awardAmount = useSelector((state) => state.auth.awardAmount);
+  const referredCounts = useSelector((state) => state.auth.referralCounts);
+  const currentDeposited = useSelector((state) => state.auth.currentDeposited);
   const dispatch = useDispatch();
 
   const [menu, setMenu] = useState(false);
   const [tab, setTab] = useState("name");
   const [isCopied, setIsCopied] = React.useState(false);
-  const [awardAmount, setAwardAmount] = useState(0);
-  const [referredCounts, setReferredCounts] = useState(0);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [newWallet, setNewWallet] = useState("");
@@ -47,7 +41,6 @@ export default function SideBar() {
   const [newPassword, setNewPassword] = useState("");
   const [newRePassword, setNewRePassword] = useState("");
   const [depositAmount, setDepositAmount] = useState(0);
-  const [currentDeposited, setCurrentDeposited] = useState(0);
 
   const onCopyText = () => {
     setIsCopied(true);
@@ -56,9 +49,13 @@ export default function SideBar() {
     }, 1000);
   };
 
+  useEffect(() => {
+    getClaimInfo();
+  }, [user?.wallet, account]);
+
   const getClaimInfo = async () => {
     let defaultWeb3 = new Web3(GOERLI_RPC_URL);
-    if (defaultWeb3 && defaultWeb3.utils.isAddress(user.wallet)) {
+    if (defaultWeb3 && defaultWeb3.utils.isAddress(account || user.wallet)) {
       const factory = new defaultWeb3.eth.Contract(
         platformABI,
         PLATFORM_CONTRACT_ADDRESS
@@ -67,20 +64,20 @@ export default function SideBar() {
         try {
           let claimable =
             (await factory.methods
-              .getClaimableInformation(user.wallet)
+              .getClaimableInformation(account || user.wallet)
               .call()) || 0;
           let gpamount = defaultWeb3.utils.fromWei(
             claimable[0].toString(),
             "ether"
           );
-          setAwardAmount(gpamount);
+          dispatch(updateAwardAmount(gpamount));
           let refCounts = claimable[1] || 0;
-          setReferredCounts(refCounts);
+          dispatch(updateReferalCounts(refCounts));
           let depositedAm = defaultWeb3.utils.fromWei(
             claimable[3].toString(),
             "ether"
           );
-          setCurrentDeposited(depositedAm);
+          dispatch(updateCurrentDeposited(depositedAm));
         } catch (e) {
           console.log(e);
         }
@@ -827,7 +824,7 @@ export default function SideBar() {
               <h4 className="font-semibold text-white">
                 {currentDeposited === 0
                   ? "Please deposit funds to this game before start playing."
-                  : `You 've deposited ${currentDeposited} ETHs to BinaryStar game.`}
+                  : `You have ${currentDeposited} ETHs on BinaryStar game.`}
               </h4>
               <div className="flex items-center justify-center mt-4 space-x-3">
                 <div className="dark:bg-[#9797972B] bg-[#0F1B2E] flex flex-col items-center rounded-lg py-2 px-4">
