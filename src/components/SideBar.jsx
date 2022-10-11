@@ -554,7 +554,7 @@ export default function SideBar() {
                 </div>
               </div>
               <button
-                className="border-2 border-lightGreen rounded-xl text-[#fff] text-lg px-4 py-4"
+                className="border-2 border-lightGreen rounded-xl text-[#fff] text-lg px-2 py-4"
                 onClick={() => {
                   onClickClaim();
                 }}
