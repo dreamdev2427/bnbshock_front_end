@@ -1,13 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import Web3 from "web3";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { NotificationManager } from "react-notifications";
+import Web3Modal from "web3modal";
 import axios from "axios";
-import { PLATFORM_CONTRACT_ADDRESS, BACKEND_URL } from "../config";
+import {
+  PLATFORM_CONTRACT_ADDRESS,
+  BACKEND_URL,
+  ROPSTEN_RPC_URL,
+  ROPSTEN_CHAIN_ID,
+  CHAINS,
+} from "../config";
 import { setCurrentUserAction } from "../store/actions/auth.actions";
 import isEmpty from "../validation/isEmpty";
-const GamePlatform = require("../assets/abi/platform.json");
+import {
+  updateGlobalWeb3,
+  setConnectedChainId,
+  setConnectedWalletAddress,
+} from "../store/actions/auth.actions";
+const platformABI = require("../assets/abi/platform.json");
+
+const web3Modal = new Web3Modal({
+  network: "mainnet",
+  cachProvider: true,
+  theme: "dark",
+  providerOptions: {},
+});
 
 export default function SideBar() {
   const user = useSelector((state) => state.auth.user);
@@ -27,6 +46,8 @@ export default function SideBar() {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newRePassword, setNewRePassword] = useState("");
+  const [depositAmount, setDepositAmount] = useState(0);
+  const [currentDeposited, setCurrentDeposited] = useState(0);
 
   const onCopyText = () => {
     setIsCopied(true);
@@ -36,23 +57,30 @@ export default function SideBar() {
   };
 
   const getClaimInfo = async () => {
-    if (account && chainId && globalWeb3) {
-      const factory = new globalWeb3.eth.Contract(
-        GamePlatform,
+    let defaultWeb3 = new Web3(ROPSTEN_RPC_URL);
+    if (defaultWeb3 && defaultWeb3.eth.isAddress(user.wallet)) {
+      const factory = new defaultWeb3.eth.Contract(
+        platformABI,
         PLATFORM_CONTRACT_ADDRESS
       );
       if (factory) {
         try {
           let claimable =
-            (await factory.methods.getClaimableInformation(account).call()) ||
-            0;
-          let gpamount = globalWeb3.utils.fromWei(
+            (await factory.methods
+              .getClaimableInformation(user.wallet)
+              .call()) || 0;
+          let gpamount = defaultWeb3.utils.fromWei(
             claimable[0].toString(),
             "ether"
           );
           setAwardAmount(gpamount);
           let refCounts = claimable[1] || 0;
           setReferredCounts(refCounts);
+          let depositedAm = defaultWeb3.utils.fromWei(
+            claimable[3].toString(),
+            "ether"
+          );
+          setCurrentDeposited(depositedAm);
         } catch (e) {
           console.error(e);
         }
@@ -77,10 +105,41 @@ export default function SideBar() {
     setNewRePassword("");
   };
 
-  const onClickClaim = async () => {
-    if (account && chainId && globalWeb3 && awardAmount > 0) {
+  const onClickWithDraw = async () => {
+    if (account && chainId && globalWeb3) {
+      if (currentDeposited <= 0) {
+        NotificationManager.warning("You have no funds on our game.");
+        return;
+      }
       const factory = new globalWeb3.eth.Contract(
-        GamePlatform,
+        platformABI,
+        PLATFORM_CONTRACT_ADDRESS
+      );
+      if (factory) {
+        try {
+          await factory.methods.withDrawPlayerFunds(account).send({
+            from: account,
+          });
+          getClaimInfo();
+        } catch (err) {
+          console.error(err);
+          if (err.code && err.code === 4100)
+            NotificationManager.warning(
+              "Please unlock your wallet and try again."
+            );
+        }
+      }
+    } else {
+      NotificationManager.warning("Please connect your wallet.");
+    }
+  };
+
+  const onClickClaim = async () => {
+    if (awardAmount > 0) {
+    } else return;
+    if (account && chainId && globalWeb3) {
+      const factory = new globalWeb3.eth.Contract(
+        platformABI,
         PLATFORM_CONTRACT_ADDRESS
       );
       if (factory) {
@@ -231,17 +290,129 @@ export default function SideBar() {
     setNewWallet(account);
   };
 
+  const onDeposit = async () => {
+    let gameContract;
+    try {
+      gameContract = new globalWeb3.eth.Contract(
+        platformABI,
+        PLATFORM_CONTRACT_ADDRESS
+      );
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        value: 0,
+        message: "Contract instance creation is failed",
+      };
+    }
+    try {
+      let payingAmount = globalWeb3.utils.toWei(
+        depositAmount.toString(),
+        "ether"
+      );
+      let funcTrx = gameContract.methods.depositFunds();
+      await funcTrx.estimateGas({
+        from: account,
+        value: payingAmount,
+      });
+      await funcTrx.send({
+        from: account,
+        value: payingAmount,
+      });
+
+      setTimeout(() => {
+        getClaimInfo();
+      }, 5000);
+      return {
+        success: true,
+        value: [],
+      };
+    } catch (err) {
+      return {
+        success: false,
+        message: err,
+      };
+    }
+  };
+
+  const dsWalletAddChain = async (chainInfo) => {
+    try {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [chainInfo],
+      });
+    } catch (addError) {
+      throw addError;
+    }
+  };
+
+  const switchWalletToANetwork = async (numChainId) => {
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x" + numChainId.toString(16) }],
+      });
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      return true;
+    } catch (error) {
+      if (error.code === 4902) {
+        await dsWalletAddChain(CHAINS[numChainId]);
+        console.log("[HEAL] dsWalletAddChain ...");
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        console.log("[HEAL] Changing net ...");
+      } else {
+        throw error;
+      }
+    }
+  };
+
+  const onClickDeposit = async () => {
+    if (depositAmount <= 0) return;
+    if (account && chainId && globalWeb3) {
+    } else {
+      NotificationManager.warning("Please connect your wallet and try again.");
+      return;
+    }
+    if (account !== user?.wallet) {
+      NotificationManager.warning(
+        "Please try again with registered wallet account."
+      );
+      return;
+    }
+    if (chainId !== ROPSTEN_CHAIN_ID) {
+      switchWalletToANetwork(ROPSTEN_CHAIN_ID);
+    }
+    try {
+      let result = await onDeposit();
+      if (result.success === false) {
+        NotificationManager.error(result.message, "Fail", 10000, () => {});
+      }
+      if (result.success === true) {
+        NotificationManager.success(
+          "Deposit succeed !!.",
+          "Information",
+          5000,
+          () => {
+            getClaimInfo();
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
-      <div className="sidebar bg-black md:w-24 w-full fixed left-0 bottom-0 md:h-full h-12 z-50 px-4 md:px-0">
-        <div className="mt-2 flex h-full w-full md:flex-col flex-row md:justify-start justify-between">
+      <div className="fixed bottom-0 left-0 z-50 w-full h-12 px-4 bg-black sidebar md:w-24 md:h-full md:px-0">
+        <div className="flex flex-row justify-between w-full h-full mt-2 md:flex-col md:justify-start">
           <div
             id="logo"
             className="mb-3 h-20 w-[6.4rem] pt-2 hidden md:flex justify-center items-center pl-2 z-50 bg-black"
           >
             <img src="/images/icon.png" alt="icon" className="w-16" />
           </div>
-          <div className="drop-shadow-neon-green-sm relative md:hidden block">
+          <div className="relative block drop-shadow-neon-green-sm md:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -257,15 +428,9 @@ export default function SideBar() {
               ></path>
             </svg>
           </div>
-          {/* <div id="Trades" className="cursor-pointer group md:m-1 md:mt-2 flex md:h-20 h-12 select-none flex-col items-center rounded-md md:py-2 transition-all duration-100 hover:bg-primary-dark-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="presentation" focusable="false" aria-hidden="true" className="md:h-12 md:w-12 h-7 w-7 transition-all duration-100 fill-primary-dark-300 group-hover:fill-gray-300">
-                            <path fillRule="evenodd" d="M6.756 3H12a1 1 0 011 1v5.308a1 1 0 11-2 0V6.414l-6.293 6.293a1 1 0 01-1.414-1.414L9.586 5h-2.83a1 1 0 010-2zm13.951 8.293a1 1 0 010 1.414L14.414 19h2.83a1 1 0 110 2H12a1 1 0 01-1-1v-5.308a1 1 0 012 0v2.894l6.293-6.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                        </svg>
-                        <div className="text-primary-dark-100 group-hover:text-gray-300 mt-2 md:block hidden">Trades</div>
-                    </div> */}
           <div
             id="Profile"
-            className="cursor-pointer group md:m-1 md:mt-2 flex md:h-20 h-12 select-none flex-col items-center rounded-md md:py-2 transition-all duration-100 hover:bg-primary-dark-600"
+            className="flex flex-col items-center h-12 transition-all duration-100 rounded-md cursor-pointer select-none group md:m-1 md:mt-2 md:h-20 md:py-2 hover:bg-primary-dark-600"
             onClick={() => {
               setMenu("profile");
             }}
@@ -277,7 +442,7 @@ export default function SideBar() {
               strokeWidth="2"
               stroke="currentColor"
               aria-hidden="true"
-              className="md:h-12 md:w-12 h-7 w-7 transition-all duration-100 stroke-primary-dark-300 group-hover:stroke-gray-300"
+              className="transition-all duration-100 md:h-12 md:w-12 h-7 w-7 stroke-primary-dark-300 group-hover:stroke-gray-300"
             >
               <path
                 strokeLinecap="round"
@@ -285,32 +450,47 @@ export default function SideBar() {
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
               ></path>
             </svg>
-            <div className="text-primary-dark-100 group-hover:text-gray-300 mt-2 md:block hidden">
+            <div className="hidden mt-2 text-primary-dark-100 group-hover:text-gray-300 md:block">
               Profile
             </div>
           </div>
-          {/* <div id="Finance" className="cursor-pointer group md:m-1 md:mt-2 flex h-20 select-none flex-col items-center rounded-md md:py-2 transition-all duration-100 hover:bg-primary-dark-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="md:h-12 md:w-12 h-7 w-7 transition-all duration-100 fill-primary-dark-300 group-hover:fill-gray-300" viewBox="0 0 24 24" aria-hidden="true">
-                            <path fillRule="evenodd" d="M17 4.775a1 1 0 00-1.316-.949L9.162 6H17V4.775zM19 6V4.775a3 3 0 00-3.949-2.846l-11 3.666A3 3 0 002 8.442V17a3 3 0 003 3h14a3 3 0 003-3V9a3 3 0 00-3-3zM5 8a1 1 0 00-1 1v8a1 1 0 001 1h14a1 1 0 001-1V9a1 1 0 00-1-1H5z">
-                            </path>
-                            <path d="M16 13a1 1 0 111.998 0A1 1 0 0116 13z"></path>
-                        </svg>
-                        <div className="text-primary-dark-100 group-hover:text-gray-300 mt-2 md:block hidden">Finance</div>
-                    </div>
-                    <div id="Support" className="cursor-pointer group md:m-1 md:mt-2 flex md:h-20 h-12 select-none flex-col items-center rounded-md md:py-2 transition-all duration-100 hover:bg-primary-dark-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"strokeWidth="2" stroke="currentColor" aria-hidden="true" className="md:h-12 md:w-12 h-7 w-7 transition-all duration-100 stroke-primary-dark-300 group-hover:stroke-gray-300">
+          <div
+            id="Finance"
+            className="flex flex-col items-center h-20 transition-all duration-100 rounded-md cursor-pointer select-none group md:m-1 md:mt-2 md:py-2 hover:bg-primary-dark-600"
+            onClick={() => {
+              setMenu("deposit");
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="transition-all duration-100 md:h-12 md:w-12 h-7 w-7 fill-primary-dark-300 group-hover:fill-gray-300"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M17 4.775a1 1 0 00-1.316-.949L9.162 6H17V4.775zM19 6V4.775a3 3 0 00-3.949-2.846l-11 3.666A3 3 0 002 8.442V17a3 3 0 003 3h14a3 3 0 003-3V9a3 3 0 00-3-3zM5 8a1 1 0 00-1 1v8a1 1 0 001 1h14a1 1 0 001-1V9a1 1 0 00-1-1H5z"
+              ></path>
+              <path d="M16 13a1 1 0 111.998 0A1 1 0 0116 13z"></path>
+            </svg>
+            <div className="hidden mt-2 text-primary-dark-100 group-hover:text-gray-300 md:block">
+              Deposit
+            </div>
+          </div>
+          {/* <div id="Support" className="flex flex-col items-center h-12 transition-all duration-100 rounded-md cursor-pointer select-none group md:m-1 md:mt-2 md:h-20 md:py-2 hover:bg-primary-dark-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"strokeWidth="2" stroke="currentColor" aria-hidden="true" className="transition-all duration-100 md:h-12 md:w-12 h-7 w-7 stroke-primary-dark-300 group-hover:stroke-gray-300">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
                                 </path>
                             </svg>
-                        <div className="text-primary-dark-100 group-hover:text-gray-300 mt-2 md:block hidden">Support</div>
+                        <div className="hidden mt-2 text-primary-dark-100 group-hover:text-gray-300 md:block">Support</div>
                     </div> */}
         </div>
       </div>
       {menu === "profile" ? (
         <>
           <div className="profile-menu-content bg-black md:ml-24 fixed sm:w-96 w-80 h-full px-2.5 top-0 left-0 z-50 overflow-y-auto">
-            <div className="flex justify-between bg-black sticky top-0 py-6">
-              <h2 className="text-2xl text-white font-semibold">
+            <div className="sticky top-0 flex justify-between py-6 bg-black">
+              <h2 className="text-2xl font-semibold text-white">
                 Profile and settings
               </h2>
               <svg
@@ -332,25 +512,25 @@ export default function SideBar() {
                 ></path>
               </svg>
             </div>
-            <div className="profile-main pt-20 pb-10">
-              <h4 className="text-white font-semibold">
-                Give a friend your referral code and you'll get BNBs as rewards!
+            <div className="pt-20 pb-10 profile-main">
+              <h4 className="font-semibold text-white">
+                Give a friend your referral code and you'll get ETHs as rewards!
               </h4>
-              <div className="mt-4 block ">
+              <div className="block mt-4 ">
                 <CopyToClipboard
                   text={`${window.location.origin}/?ref=${
                     user?.wallet || account
                   }`}
                   onCopy={onCopyText}
                 >
-                  <button className="inline-block w-auto uppercase bg-primaryGreen px-4 py-3 rounded-md text-center text-white font-semibold">
+                  <button className="inline-block w-auto px-4 py-3 font-semibold text-center text-white uppercase rounded-md bg-primaryGreen">
                     Copy Referral link
                   </button>
                 </CopyToClipboard>
               </div>
             </div>
 
-            <div className="flex items-center flex-col space-y-3 sm:space-y-0 sm:flex-row justify-between mt-1 mb-10">
+            <div className="flex flex-col items-center justify-between mt-1 mb-10 space-y-3 sm:space-y-0 sm:flex-row">
               <div className="flex items-center space-x-3">
                 <div className="dark:bg-[#9797972B] bg-[#0F1B2E] flex flex-col items-center rounded-lg py-2 px-4">
                   <h2 className="text-[#09C9E3] text-lg font-bold">
@@ -363,7 +543,7 @@ export default function SideBar() {
 
                 <div className="dark:bg-[#9797972B] bg-[#0F1B2E] flex flex-col items-center rounded-lg py-2 px-4">
                   <h2 className="text-[#EDD604] text-lg font-bold">
-                    {awardAmount} BNB
+                    {awardAmount} ETH
                   </h2>
                   <p className="text-[#DADADA] font-normal text-sm">
                     Active Awards
@@ -381,7 +561,7 @@ export default function SideBar() {
             </div>
 
             <div
-              className="flex space-x-1 rounded-xl bg-primary-dark-600 p-1"
+              className="flex p-1 space-x-1 rounded-xl bg-primary-dark-600"
               role="tablist"
               aria-orientation="horizontal"
             >
@@ -453,11 +633,11 @@ export default function SideBar() {
                 Password
               </button>
             </div>
-            <div className="tab-content mt-3">
+            <div className="mt-3 tab-content">
               {tab === "name" ? (
                 <>
                   <div className="name">
-                    <div className="mt-7 flex flex-col">
+                    <div className="flex flex-col mt-7">
                       <div className="flex flex-col content-center justify-center gap-2">
                         <label className="text-xl font-semibold text-gray-200">
                           Enter your name
@@ -465,7 +645,7 @@ export default function SideBar() {
                         <input
                           type="text"
                           name="name"
-                          className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-3"
+                          className="w-full px-3 py-2 mb-3 text-black border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
                           placeholder="Enter your name"
                           value={newName}
                           onChange={(e) => {
@@ -473,7 +653,7 @@ export default function SideBar() {
                           }}
                         />
                         <button
-                          className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                          className="w-full h-12 text-sm text-white uppercase border-2 border-lightGreen rounded-xl"
                           onClick={() => {
                             updateUserProfileOnDB("name");
                           }}
@@ -490,7 +670,7 @@ export default function SideBar() {
               {tab === "email" ? (
                 <>
                   <div className="email">
-                    <div className="mt-7 flex flex-col">
+                    <div className="flex flex-col mt-7">
                       <div className="flex flex-col content-center justify-center gap-2">
                         <label className="text-xl font-semibold text-gray-200">
                           Change your phone number
@@ -498,7 +678,7 @@ export default function SideBar() {
                         <input
                           type="text"
                           name="phone"
-                          className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1"
+                          className="w-full px-3 py-2 mb-1 text-black border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
                           placeholder="Enter your phone number"
                           value={newPhone}
                           onChange={(e) => {
@@ -506,7 +686,7 @@ export default function SideBar() {
                           }}
                         />
                         <button
-                          className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                          className="w-full h-12 text-sm text-white uppercase border-2 border-lightGreen rounded-xl"
                           onClick={() => {
                             updateUserProfileOnDB("phone");
                           }}
@@ -523,7 +703,7 @@ export default function SideBar() {
               {tab === "wallet" ? (
                 <>
                   <div className="email">
-                    <div className="mt-7 flex flex-col">
+                    <div className="flex flex-col mt-7">
                       <div className="flex flex-col content-center justify-center gap-2">
                         <label className="text-xl font-semibold text-gray-200">
                           Change your wallet account
@@ -531,7 +711,7 @@ export default function SideBar() {
                         <input
                           type="text"
                           name="wallet"
-                          className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1"
+                          className="w-full px-3 py-2 mb-1 text-black border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
                           placeholder="Wallet address"
                           value={newWallet}
                           onChange={(e) => {
@@ -539,7 +719,7 @@ export default function SideBar() {
                           }}
                         />
                         <button
-                          className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                          className="w-full h-12 text-sm text-white uppercase border-2 border-lightGreen rounded-xl"
                           onClick={() => {
                             setConnectedWalletToNew();
                           }}
@@ -547,7 +727,7 @@ export default function SideBar() {
                           Copy connected wallet address
                         </button>
                         <button
-                          className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                          className="w-full h-12 text-sm text-white uppercase border-2 border-lightGreen rounded-xl"
                           onClick={() => {
                             updateUserProfileOnDB("wallet");
                           }}
@@ -564,7 +744,7 @@ export default function SideBar() {
               {tab === "password" ? (
                 <>
                   <div className="password">
-                    <div className="mt-7 flex flex-col">
+                    <div className="flex flex-col mt-7">
                       <div className="flex flex-col content-center justify-center gap-2">
                         <label className="text-xl font-semibold text-gray-200">
                           Change your password
@@ -572,7 +752,7 @@ export default function SideBar() {
                         <input
                           type="password"
                           name="password"
-                          className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1"
+                          className="w-full px-3 py-2 mb-1 text-black border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
                           placeholder="Your current password"
                           onChange={(e) => {
                             setPassword(e.target.value);
@@ -582,7 +762,7 @@ export default function SideBar() {
                         <input
                           type="password"
                           name="newPassword"
-                          className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-1"
+                          className="w-full px-3 py-2 mb-1 text-black border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
                           placeholder="New password"
                           onChange={(e) => {
                             setNewPassword(e.target.value);
@@ -592,7 +772,7 @@ export default function SideBar() {
                         <input
                           type="password"
                           name="reNewpassword"
-                          className="w-full py-2 px-3 rounded-md text-black border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen mb-3"
+                          className="w-full px-3 py-2 mb-3 text-black border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
                           placeholder="Re-Enter your new password"
                           onChange={(e) => {
                             setNewRePassword(e.target.value);
@@ -600,7 +780,7 @@ export default function SideBar() {
                           value={newRePassword}
                         />
                         <button
-                          className="border-2 border-lightGreen rounded-xl text-white uppercase h-12 w-full text-sm"
+                          className="w-full h-12 text-sm text-white uppercase border-2 border-lightGreen rounded-xl"
                           onClick={() => {
                             updateUserProfileOnDB("password");
                           }}
@@ -614,6 +794,83 @@ export default function SideBar() {
               ) : (
                 ""
               )}
+            </div>
+          </div>
+        </>
+      ) : menu === "deposit" ? (
+        <>
+          <div className="profile-menu-content bg-black md:ml-24 fixed sm:w-96 w-80 h-full px-2.5 top-0 left-0 z-50 overflow-y-auto">
+            <div className="sticky top-0 flex justify-between py-6 bg-black">
+              <h2 className="text-2xl font-semibold text-white">
+                Deposit funds
+              </h2>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                aria-hidden="true"
+                className="w-10 h-10 text-white"
+                onClick={() => {
+                  setMenu(false);
+                }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </div>
+            <div className="pt-20 pb-10 profile-main">
+              <h4 className="font-semibold text-white">
+                {currentDeposited === 0
+                  ? "Please deposit funds to this game before start playing."
+                  : `You 've deposited ${currentDeposited} ETHs to BinaryStar game.`}
+              </h4>
+              <div className="flex items-center justify-center mt-4 space-x-3">
+                <div className="dark:bg-[#9797972B] bg-[#0F1B2E] flex flex-col items-center rounded-lg py-2 px-4">
+                  <h2 className="text-[#EDD604] text-lg font-bold">
+                    {currentDeposited} ETH
+                  </h2>
+                  <p className="text-[#DADADA] font-normal text-sm">
+                    Your game balance
+                  </p>
+                </div>
+                <button
+                  className="border-2 border-lightGreen rounded-xl text-[#fff] text-lg px-4 py-4"
+                  onClick={() => {
+                    onClickWithDraw();
+                  }}
+                >
+                  Withdraw
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center justify-between mt-1 mb-10 space-y-3 sm:space-y-0 sm:flex-row">
+              <div className="flex items-center justify-center space-x-3 align-center">
+                <input
+                  type="number"
+                  name="depositInput"
+                  className="w-8/12 px-3 py-4 text-white border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
+                  placeholder="0"
+                  onChange={(e) => {
+                    setDepositAmount(e.target.value);
+                  }}
+                  value={depositAmount}
+                />
+                <h2 className="text-[#EDD604] text-lg font-bold">ETH</h2>
+              </div>
+              <button
+                className="border-2 border-lightGreen rounded-xl text-[#fff] text-lg px-4 py-4"
+                onClick={() => {
+                  onClickDeposit();
+                }}
+              >
+                Deposit
+              </button>
             </div>
           </div>
         </>

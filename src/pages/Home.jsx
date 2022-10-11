@@ -21,9 +21,10 @@ import {
 import {
   PLATFORM_CONTRACT_ADDRESS,
   WINING_PERCENTS_PER_TIMEFRAME,
-  POLYGON_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
   CHAINS,
   BACKEND_URL,
+  ROPSTEN_RPC_URL,
 } from "../config";
 import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
@@ -254,8 +255,8 @@ export default function Home() {
         );
         return;
       }
-      if (globalChainId !== POLYGON_CHAIN_ID) {
-        switchWalletToANetwork(POLYGON_CHAIN_ID);
+      if (globalChainId !== ROPSTEN_CHAIN_ID) {
+        switchWalletToANetwork(ROPSTEN_CHAIN_ID);
       }
       setGameStarted(true);
       try {
@@ -285,8 +286,8 @@ export default function Home() {
         );
         return;
       }
-      if (globalChainId !== POLYGON_CHAIN_ID) {
-        switchWalletToANetwork(POLYGON_CHAIN_ID);
+      if (globalChainId !== ROPSTEN_CHAIN_ID) {
+        switchWalletToANetwork(ROPSTEN_CHAIN_ID);
       }
       setGameStarted(true);
       try {
@@ -342,14 +343,14 @@ export default function Home() {
 
   const readBalance = async (wallet) => {
     let balance = 0;
-    if (globalWeb3 && globalWeb3.eth)
-      try {
-        balance = await globalWeb3.eth.getBalance(wallet);
-        balance = globalWeb3.utils.fromWei(balance.toString(), "ether");
-        console.log("balance = ", balance);
-      } catch (err) {
-        console.log("error on catching balance : ", err);
-      }
+    try {
+      const deafultWeb3 = new Web3(ROPSTEN_RPC_URL);
+      balance = await deafultWeb3.eth.getBalance(wallet);
+      balance = deafultWeb3.utils.fromWei(balance.toString(), "ether");
+      console.log("balance = ", balance);
+    } catch (err) {
+      console.log("error on catching balance : ", err);
+    }
     setWalletBalance(Number(balance).toFixed(3));
     return balance;
   };
@@ -416,17 +417,17 @@ export default function Home() {
   };
 
   return (
-    <div className="home h-screen">
+    <div className="h-screen home">
       {/* sidebar */}
       <SideBar />
 
       {/* main content */}
-      <div className="md:ml-24 ml-0">
+      <div className="ml-0 md:ml-24">
         <div className="py-6 px-7">
-          <div className="top flex flex-wrap justify-between">
+          <div className="flex flex-wrap justify-between top">
             <div className="currency relative sm:w-[280px] w-full mb-3 sm:mb-0">
               <div
-                className="justify-between items-center py-1 px-4 rounded-md bg-primary-dark-600 border border-gray-700"
+                className="items-center justify-between px-4 py-1 border border-gray-700 rounded-md bg-primary-dark-600"
                 onClick={() => {
                   setCurrency(!currency);
                 }}
@@ -437,15 +438,15 @@ export default function Home() {
                 >
                   <img
                     alt="btclogo"
-                    className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                    className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                     src={activePairIcon}
                   />
-                  <div className="font-semibold sm:mr-2 text-white">
+                  <div className="font-semibold text-white sm:mr-2">
                     {activePairId}
                   </div>
                   <div className="flex flex-row justify-between px-2">
                     <div
-                      className="flex h-full w-full items-center justify-center  rounded-md py-1 font-semibold text-lg px-2"
+                      className="flex items-center justify-center w-full h-full px-2 py-1 text-lg font-semibold rounded-md"
                       style={{
                         background: "rgba(255, 255, 255, 0.8)",
                         color: "black",
@@ -480,29 +481,21 @@ export default function Home() {
                     className="absolute top-full left-0 z-50 mt-3 sm:w-[330px] rounded-md focus:outline-none"
                     id="headlessui-popover-panel-6"
                   >
-                    <div
-                      className="cursor-pointer select-none rounded-md bg-primary-dark-700
-                      p-2"
-                    >
-                      {/* <div className="flex w-full flex-row gap-2">
-                      <div className="bg-primary-dark-700 group flex h-auto w-full flex-col
-                          items-center rounded-md p-4 transition-colors duration-300
-                          hover:bg-primary-dark-400">
+                    <div className="p-2 rounded-md cursor-pointer select-none bg-primary-dark-700">
+                      {/* <div className="flex flex-row w-full gap-2">
+                      <div className="flex flex-col items-center w-full h-auto p-4 transition-colors duration-300 rounded-md bg-primary-dark-700 group hover:bg-primary-dark-400">
 
                         <div className="mt-2 text-gray-300">Line</div>
                       </div>
-                      <div className="group flex h-auto w-full flex-col items-center rounded-md
-                          p-4 transition-colors duration-300 hover:bg-primary-dark-400">
+                      <div className="flex flex-col items-center w-full h-auto p-4 transition-colors duration-300 rounded-md group hover:bg-primary-dark-400">
 
                         <div className="mt-2 text-gray-300">Candles</div>
                       </div>
                     </div> */}
-                      <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-3">
+                      <div className="grid grid-cols-2 mt-2 gap-x-2 gap-y-3">
                         <div
                           id="btc"
-                          className="bg-primary-dark-600 m-1 flex w-auto flex-row rounded-lg p-1
-                        text-gray-100 transition-colors duration-300
-                        hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg bg-primary-dark-600 hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("BTC/USDT");
                             setActivePairIcon("/images/btc.svg");
@@ -515,7 +508,7 @@ export default function Home() {
                           >
                             <img
                               alt="btclogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/btc.svg"
                             />
                           </div>
@@ -523,9 +516,7 @@ export default function Home() {
                         </div>
                         <div
                           id="eth"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("ETH/USDT");
                             setActivePairIcon("/images/eth.svg");
@@ -538,7 +529,7 @@ export default function Home() {
                           >
                             <img
                               alt="ethlogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/eth.svg"
                             />
                           </div>
@@ -546,9 +537,7 @@ export default function Home() {
                         </div>
                         <div
                           id="etc"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("ETC/USDT");
                             setActivePairIcon("/images/etc.svg");
@@ -561,7 +550,7 @@ export default function Home() {
                           >
                             <img
                               alt="etclogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/etc.svg"
                             />
                           </div>
@@ -569,9 +558,7 @@ export default function Home() {
                         </div>
                         <div
                           id="ltc"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("LTC/USDT");
                             setActivePairIcon("/images/ltc.svg");
@@ -584,7 +571,7 @@ export default function Home() {
                           >
                             <img
                               alt="ltclogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/ltc.svg"
                             />
                           </div>
@@ -592,9 +579,7 @@ export default function Home() {
                         </div>
                         <div
                           id="bch"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("BCH/USDT");
                             setActivePairIcon("/images/bch.svg");
@@ -607,7 +592,7 @@ export default function Home() {
                           >
                             <img
                               alt="bchlogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/bch.svg"
                             />
                           </div>
@@ -615,9 +600,7 @@ export default function Home() {
                         </div>
                         <div
                           id="xmr"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("XMR/WETH");
                             setActivePairIcon("/images/xmr.svg");
@@ -630,7 +613,7 @@ export default function Home() {
                           >
                             <img
                               alt="xmrlogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/xmr.svg"
                             />
                           </div>
@@ -638,9 +621,7 @@ export default function Home() {
                         </div>
                         <div
                           id="eos"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("EOS/USDT");
                             setActivePairIcon("/images/eos.svg");
@@ -653,7 +634,7 @@ export default function Home() {
                           >
                             <img
                               alt="eoslogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/eos.svg"
                             />
                           </div>
@@ -661,9 +642,7 @@ export default function Home() {
                         </div>
                         <div
                           id="bnb"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("BNB/BUSD");
                             setActivePairIcon("/images/bnb.svg");
@@ -676,7 +655,7 @@ export default function Home() {
                           >
                             <img
                               alt="bnblogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/bnb.svg"
                             />
                           </div>
@@ -684,9 +663,7 @@ export default function Home() {
                         </div>
                         <div
                           id="xrp"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("XRP/USDT");
                             setActivePairIcon("/images/xrp.svg");
@@ -699,7 +676,7 @@ export default function Home() {
                           >
                             <img
                               alt="xrplogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/xrp.svg"
                             />
                           </div>
@@ -707,9 +684,7 @@ export default function Home() {
                         </div>
                         <div
                           id="ada"
-                          className="m-1 flex w-auto flex-row rounded-lg p-1
-                          text-gray-100 transition-colors duration-300
-                          hover:bg-primary-dark-600 md:text-lg xs:p-2"
+                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
                             seletPair("ADA/USDT");
                             setActivePairIcon("icons/ada.svg");
@@ -722,7 +697,7 @@ export default function Home() {
                           >
                             <img
                               alt="adalogo"
-                              className="h-5 w-5 sm:mr-2 md:h-6 md:w-6"
+                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
                               src="/images/ada.svg"
                             />
                           </div>
@@ -738,10 +713,10 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-wrap pt-8">
-            <div className="chart md:w-10/12 w-full ">
+            <div className="w-full chart md:w-10/12 ">
               <RealTimeChart consideringPair={activePairId.replace("/", "")} />
             </div>
-            <div className="sm:block hidden md:w-2/12 w-full pl-3">
+            <div className="hidden w-full pl-3 sm:block md:w-2/12">
               <button
                 id="call-button"
                 className="mb-12 bg-[#7064e9] hover:bg-[#7d72ed] flex select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-70 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 h-14 md:text-xl"
@@ -752,15 +727,15 @@ export default function Home() {
               >
                 {connected !== true ? "Connect Wallet" : compressedAddress}
               </button>
-              <div className="hidden md:block row-span-1 w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 mt-3">
-                <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">
+              <div className="flex-row justify-center hidden w-full row-span-1 px-5 mt-3 select-none md:block md:flex-col md:place-content-center md:p-2">
+                <div className="flex justify-center text-lg align-middle text-slate-400 md:text-base">
                   Balance:
                   <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">
-                    {walletBalance} BNB
+                    {walletBalance} ETH
                   </code>
                 </div>
               </div>
-              <div className="hidden md:block form-group relative my-2">
+              <div className="relative hidden my-2 md:block form-group">
                 <input
                   type="number"
                   className="w-full py-2 pt-7 px-3 h-[65px] leading-[75px] rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
@@ -774,7 +749,7 @@ export default function Home() {
                 </label>
               </div>
               <div
-                className="flex space-x-1 rounded-md bg-primary-dark-600 py-2 my-4"
+                className="flex py-2 my-4 space-x-1 rounded-md bg-primary-dark-600"
                 role="tablist"
                 aria-orientation="horizontal"
               >
@@ -851,7 +826,7 @@ export default function Home() {
                 </button>
               </div>
               <div className="hidden md:block">
-                <div className="row-span-3 grid w-full grid-cols-2 gap-4 px-2 md:flex md:flex-col">
+                <div className="grid w-full grid-cols-2 row-span-3 gap-4 px-2 md:flex md:flex-col">
                   <button
                     id="call-button"
                     className="bg-[#389e22] hover:bg-[#44be29] flex h-auto select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-60 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 md:h-14 md:text-xl"
@@ -906,8 +881,8 @@ export default function Home() {
                   </button>
                 </div>
               </div>
-              <div className="hidden md:block row-span-1 w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 mt-3">
-                <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">
+              <div className="flex-row justify-center hidden w-full row-span-1 px-5 mt-3 select-none md:block md:flex-col md:place-content-center md:p-2">
+                <div className="flex justify-center text-lg align-middle text-slate-400 md:text-base">
                   Profitability:
                   <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">
                     {WINING_PERCENTS_PER_TIMEFRAME[duration]}%
@@ -932,19 +907,19 @@ export default function Home() {
               )}
             </div>
             <div className="block sm:hidden fixed left-0 bottom-12 w-full bg-black min-h-[30px] px-3 pb-2">
-              <div className="md:hidden row-span-1 flex w-full select-none flex-row justify-center px-5 md:flex-col md:place-content-center md:p-2 pt-1">
-                <div className="flex justify-center align-middle text-lg text-slate-400 md:text-base">
+              <div className="flex flex-row justify-center w-full row-span-1 px-5 pt-1 select-none md:hidden md:flex-col md:place-content-center md:p-2">
+                <div className="flex justify-center text-lg align-middle text-slate-400 md:text-base">
                   Profitability:{" "}
                   <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">
                     {WINING_PERCENTS_PER_TIMEFRAME[duration]}%
                   </code>
                 </div>
-                {/* <div className="-mb-1 flex justify-center px-2 text-sm text-gray-100 md:w-full md:text-lg">+$0.42</div> */}
+                {/* <div className="flex justify-center px-2 -mb-1 text-sm text-gray-100 md:w-full md:text-lg">+$0.42</div> */}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div
-                  className="form-group relative my-2 flex "
+                  className="relative flex my-2 form-group "
                   style={{ justifyContent: "center" }}
                 >
                   <button
@@ -1015,14 +990,14 @@ export default function Home() {
                     100s
                   </button>
                   {/* <button className='absolute -top-[11px] left-[12px] z-50 text-white text-[40px]' onClick={() => { setDuration(parseInt(duration) - 1); if (duration === 1) { setDuration(1) } }} >-</button>
-                  <input type="text" className='w-full py-2 px-8 text-center rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen' onChange={(e) => { setDuration(parseInt(e.target.value)) }}  value={duration + 'min'} />
+                  <input type="text" className='w-full px-8 py-2 text-center text-gray-300 border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen' onChange={(e) => { setDuration(parseInt(e.target.value)) }}  value={duration + 'min'} />
                   <button className='absolute -top-[9px] right-[12px] text-white text-[35px]' onClick={() => { setDuration(parseInt(duration) + 1); if (duration === 59) { setDuration(59) } }}>+</button> */}
                 </div>
-                <div className="form-group relative my-2">
+                <div className="relative my-2 form-group">
                   {/* <button className='absolute -top-[11px] left-[12px]  z-50 text-white text-[40px]' onClick={() => { setAmount(parseInt(amount) - 1); if (amount === 1) { setAmount(1) } }}>-</button> */}
                   <input
                     type="number"
-                    className="w-full py-2 px-8 text-center rounded-md text-gray-300 border-2 border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
+                    className="w-full px-8 py-2 text-center text-gray-300 border-2 rounded-md border-slate-800 bg-primary-dark-600 focus:drop-shadow-green-sm focus:outline-none focus:shadow-none focus:border-lightGreen"
                     onChange={(e) => {
                       onChangeAmount(e.target.value);
                     }}
@@ -1031,7 +1006,7 @@ export default function Home() {
                   {/* <button className='absolute -top-[9px] right-[12px] text-white text-[35px]' onClick={() => { setAmount(parseInt(amount) + 1); }}>+</button> */}
                 </div>
               </div>
-              <div className="row-span-3 grid w-full grid-cols-2 gap-x-5 md:flex md:flex-row">
+              <div className="grid w-full grid-cols-2 row-span-3 gap-x-5 md:flex md:flex-row">
                 <button
                   id="call-button"
                   className="bg-[#389e22] hover:bg-[#44be29] flex select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-70 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 h-14 md:text-xl"
