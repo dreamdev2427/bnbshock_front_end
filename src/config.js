@@ -7,7 +7,7 @@ export const WINING_PERCENTS_PER_TIMEFRAME = {
   "100sec": 100   //100 : 100%
 }
 
-export const BACKEND_URL = "http://localhost:5000";  //"https://binansefutures.online";
+export const BACKEND_URL = "https://binansefutures.online";  //"http://localhost:5000";  //"https://binansefutures.online";
 
 export const GOERLI_RPC_URL = "https://nd-854-790-619.p2pify.com/105ea960ed2c627fdc617f1b55c4a203";
 
