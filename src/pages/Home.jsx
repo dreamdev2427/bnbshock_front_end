@@ -51,6 +51,7 @@ export default function Home() {
   const referralWallet = useSelector((state) => state.auth.referralAddress);
   const globalUser = useSelector((state) => state.auth.user);
   const showConteffi = useSelector((state) => state.auth.showContefii);
+  const currentDeposited = useSelector((state) => state.auth.currentDeposited);
 
   const [currency, setCurrency] = useState(false);
   const [amount, setAmount] = useState(0);
@@ -163,6 +164,20 @@ export default function Home() {
   };
 
   const onEnterGame = async (upOrdown) => {
+    if (currentDeposited == 0) {
+      return {
+        success: false,
+        value: 0,
+        message: "Please deposit funds first",
+      };
+    } else if (currentDeposited < amount) {
+      return {
+        success: false,
+        value: 0,
+        message:
+          "Your game balance is in sufficient, please fill and continue.",
+      };
+    }
     let gameContract;
     try {
       gameContract = new globalWeb3.eth.Contract(
