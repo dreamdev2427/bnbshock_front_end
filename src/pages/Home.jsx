@@ -186,8 +186,7 @@ export default function Home() {
         currentPrices.find(
           (item) => item.symbol === activePairId.replace("/", "")
         )?.price || 0;
-      let vettingPeriod = 0,
-        vettingAmount = 0;
+      let vettingPeriod = 0;
       switch (duration) {
         default:
           break;
@@ -204,6 +203,7 @@ export default function Home() {
           vettingPeriod = 100;
           break;
       }
+
       try {
         axios
           .post(
@@ -211,7 +211,7 @@ export default function Home() {
             {
               wallet: wallet,
               pairId: activePairId,
-              amount: vettingAmount,
+              amount: amount,
               pairPrice: pairPrice,
               upOrDown: upOrdown,
               vettingPeriod: vettingPeriod,
