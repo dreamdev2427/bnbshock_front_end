@@ -532,16 +532,6 @@ export default function Home() {
                     id="headlessui-popover-panel-6"
                   >
                     <div className="p-2 rounded-md cursor-pointer select-none bg-primary-dark-700">
-                      {/* <div className="flex flex-row w-full gap-2">
-                      <div className="flex flex-col items-center w-full h-auto p-4 transition-colors duration-300 rounded-md bg-primary-dark-700 group hover:bg-primary-dark-400">
-
-                        <div className="mt-2 text-gray-300">Line</div>
-                      </div>
-                      <div className="flex flex-col items-center w-full h-auto p-4 transition-colors duration-300 rounded-md group hover:bg-primary-dark-400">
-
-                        <div className="mt-2 text-gray-300">Candles</div>
-                      </div>
-                    </div> */}
                       <div className="grid grid-cols-2 mt-2 gap-x-2 gap-y-3">
                         <div
                           id="btc"
@@ -586,27 +576,6 @@ export default function Home() {
                           <div className="mr-1">ETH/USDT</div>
                         </div>
                         <div
-                          id="etc"
-                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
-                          onClick={() => {
-                            seletPair("ETC/USDT");
-                            setActivePairIcon("/images/etc.svg");
-                            setCurrency(!currency);
-                          }}
-                        >
-                          <div
-                            className="mr-2 mt-0.5
-                            -ml-2"
-                          >
-                            <img
-                              alt="etclogo"
-                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
-                              src="/images/etc.svg"
-                            />
-                          </div>
-                          <div className="mr-1">ETC/USDT</div>
-                        </div>
-                        <div
                           id="ltc"
                           className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
                           onClick={() => {
@@ -626,69 +595,6 @@ export default function Home() {
                             />
                           </div>
                           <div className="mr-1">LTC/USDT</div>
-                        </div>
-                        <div
-                          id="bch"
-                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
-                          onClick={() => {
-                            seletPair("BCH/USDT");
-                            setActivePairIcon("/images/bch.svg");
-                            setCurrency(!currency);
-                          }}
-                        >
-                          <div
-                            className="mr-2 mt-0.5
-                            -ml-2"
-                          >
-                            <img
-                              alt="bchlogo"
-                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
-                              src="/images/bch.svg"
-                            />
-                          </div>
-                          <div className="mr-1">BCH/USDT</div>
-                        </div>
-                        <div
-                          id="xmr"
-                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
-                          onClick={() => {
-                            seletPair("XMR/WETH");
-                            setActivePairIcon("/images/xmr.svg");
-                            setCurrency(!currency);
-                          }}
-                        >
-                          <div
-                            className="mr-2 mt-0.5
-                            -ml-2"
-                          >
-                            <img
-                              alt="xmrlogo"
-                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
-                              src="/images/xmr.svg"
-                            />
-                          </div>
-                          <div className="mr-1">XMR/WETH</div>
-                        </div>
-                        <div
-                          id="eos"
-                          className="flex flex-row w-auto p-1 m-1 text-gray-100 transition-colors duration-300 rounded-lg hover:bg-primary-dark-600 md:text-lg xs:p-2"
-                          onClick={() => {
-                            seletPair("EOS/USDT");
-                            setActivePairIcon("/images/eos.svg");
-                            setCurrency(!currency);
-                          }}
-                        >
-                          <div
-                            className="mr-2 mt-0.5
-                            -ml-2"
-                          >
-                            <img
-                              alt="eoslogo"
-                              className="w-5 h-5 sm:mr-2 md:h-6 md:w-6"
-                              src="/images/eos.svg"
-                            />
-                          </div>
-                          <div className="mr-1">EOS/USDT</div>
                         </div>
                         <div
                           id="bnb"
