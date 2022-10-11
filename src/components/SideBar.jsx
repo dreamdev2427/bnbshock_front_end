@@ -429,7 +429,7 @@ export default function SideBar() {
           </div>
           <div className="relative block drop-shadow-neon-green-sm md:hidden">
             {remainedDownCount > 0 ? (
-              <>{remainedDownCount} sec</>
+              <h4 className="text-white">{remainedDownCount} sec</h4>
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
