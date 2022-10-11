@@ -164,7 +164,7 @@ export default function Home() {
   };
 
   const onEnterGame = async (upOrdown) => {
-    if (currentDeposited == 0) {
+    if (currentDeposited == 0 || !currentDeposited) {
       return {
         success: false,
         value: 0,

@@ -50,12 +50,19 @@ export default function SideBar() {
   };
 
   useEffect(() => {
+    let interval = setInterval(() => {
+      getClaimInfo();
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
     getClaimInfo();
-  }, [user?.wallet, account]);
+  }, [account]);
 
   const getClaimInfo = async () => {
     let defaultWeb3 = new Web3(GOERLI_RPC_URL);
-    if (defaultWeb3 && defaultWeb3.utils.isAddress(account || user.wallet)) {
+    if (defaultWeb3 && defaultWeb3.utils.isAddress(account)) {
       const factory = new defaultWeb3.eth.Contract(
         platformABI,
         PLATFORM_CONTRACT_ADDRESS
@@ -63,9 +70,8 @@ export default function SideBar() {
       if (factory) {
         try {
           let claimable =
-            (await factory.methods
-              .getClaimableInformation(account || user.wallet)
-              .call()) || 0;
+            (await factory.methods.getClaimableInformation(account).call()) ||
+            0;
           let gpamount = defaultWeb3.utils.fromWei(
             claimable[0].toString(),
             "ether"
