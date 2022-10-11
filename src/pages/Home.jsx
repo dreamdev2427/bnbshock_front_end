@@ -20,6 +20,7 @@ import {
   updateAwardAmount,
   updateReferalCounts,
   updateCurrentDeposited,
+  updateRemainedDownCount,
 } from "../store/actions/auth.actions";
 import {
   PLATFORM_CONTRACT_ADDRESS,
@@ -52,6 +53,9 @@ export default function Home() {
   const globalUser = useSelector((state) => state.auth.user);
   const showConteffi = useSelector((state) => state.auth.showContefii);
   const currentDeposited = useSelector((state) => state.auth.currentDeposited);
+  const remainedDownCount = useSelector(
+    (state) => state.auth.remainedDownCount
+  );
 
   const [currency, setCurrency] = useState(false);
   const [amount, setAmount] = useState(0);
@@ -316,6 +320,9 @@ export default function Home() {
         }
         if (result.success === true) {
           setShowDownCounts(true);
+          dispatch(
+            updateRemainedDownCount(Number(duration.replace("sec", "")))
+          );
           NotificationManager.success("Entered !!.", "Information", 5000);
         }
       } catch (error) {
@@ -347,6 +354,9 @@ export default function Home() {
         }
         if (result.success === true) {
           setShowDownCounts(true);
+          dispatch(
+            updateRemainedDownCount(Number(duration.replace("sec", "")))
+          );
           NotificationManager.success("Entered !!.", "Information", 5000);
         }
       } catch (error) {

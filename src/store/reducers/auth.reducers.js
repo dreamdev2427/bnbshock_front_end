@@ -11,7 +11,8 @@ import {
     UPDATE_SHOW_CONTEFFI,
     UPDATE_AWARD_AMOUNT,
     UPDATE_REFERRAL_COUNTS,
-    UPDATE_CURRENT_DEPOSITED
+    UPDATE_CURRENT_DEPOSITED,
+    UPDATE_REMAINED_DOWNCOUNT
 } from "../actions/action.types";
 
 const auth = {
@@ -31,11 +32,16 @@ const auth = {
     showContefii: false,
     awardAmount: 0,
     referralCounts: 0,
-    currentDeposited: 0
+    currentDeposited: 0,
+    remainedDownCount: 0
 }
 
 export function Auth(state = auth, action) {
     switch (action.type) {
+        case UPDATE_REMAINED_DOWNCOUNT:
+            return {
+                ...state, remainedDownCount: action.payload
+            }
         case UPDATE_AWARD_AMOUNT:
             return {
                 ...state, awardAmount: action.payload

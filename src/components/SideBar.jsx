@@ -17,6 +17,7 @@ import {
   updateAwardAmount,
   updateCurrentDeposited,
   updateReferalCounts,
+  updateRemainedDownCount,
 } from "../store/actions/auth.actions";
 import isEmpty from "../validation/isEmpty";
 const platformABI = require("../assets/abi/platform.json");
@@ -29,6 +30,9 @@ export default function SideBar() {
   const awardAmount = useSelector((state) => state.auth.awardAmount);
   const referredCounts = useSelector((state) => state.auth.referralCounts);
   const currentDeposited = useSelector((state) => state.auth.currentDeposited);
+  const remainedDownCount = useSelector(
+    (state) => state.auth.remainedDownCount
+  );
   const dispatch = useDispatch();
 
   const [menu, setMenu] = useState(false);
@@ -41,6 +45,14 @@ export default function SideBar() {
   const [newPassword, setNewPassword] = useState("");
   const [newRePassword, setNewRePassword] = useState("");
   const [depositAmount, setDepositAmount] = useState(0);
+
+  useEffect(() => {
+    remainedDownCount > 0 &&
+      setTimeout(
+        () => dispatch(updateRemainedDownCount(remainedDownCount - 1)),
+        1000
+      );
+  }, [remainedDownCount]);
 
   const onCopyText = () => {
     setIsCopied(true);
@@ -416,20 +428,24 @@ export default function SideBar() {
             <img src="/images/icon.png" alt="icon" className="w-16" />
           </div>
           <div className="relative block drop-shadow-neon-green-sm md:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              role="presentation"
-              focusable="false"
-              aria-hidden="true"
-              className="fill-primary-green-100 drop-shadow-green-md h-7 w-7"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7 2a5 5 0 00-5 5v10a5 5 0 005 5h10a5 5 0 005-5V7a5 5 0 00-5-5H7zm13 10V7a3 3 0 00-3-3H7a3 3 0 00-3 3v8h1.441l1.495-2.429A1.2 1.2 0 017.958 12h3.402l2.333-5.055a1.2 1.2 0 012.147-.066L18.597 12H20zM4 17h1.888a1.2 1.2 0 001.022-.571L8.405 14h3.467a1.2 1.2 0 001.09-.697l1.876-4.066 2.225 4.132a1.2 1.2 0 001.056.631H20v3a3 3 0 01-3 3H7a3 3 0 01-3-3z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
+            {remainedDownCount > 0 ? (
+              <>{remainedDownCount} sec</>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                role="presentation"
+                focusable="false"
+                aria-hidden="true"
+                className="fill-primary-green-100 drop-shadow-green-md h-7 w-7"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7 2a5 5 0 00-5 5v10a5 5 0 005 5h10a5 5 0 005-5V7a5 5 0 00-5-5H7zm13 10V7a3 3 0 00-3-3H7a3 3 0 00-3 3v8h1.441l1.495-2.429A1.2 1.2 0 017.958 12h3.402l2.333-5.055a1.2 1.2 0 012.147-.066L18.597 12H20zM4 17h1.888a1.2 1.2 0 001.022-.571L8.405 14h3.467a1.2 1.2 0 001.09-.697l1.876-4.066 2.225 4.132a1.2 1.2 0 001.056.631H20v3a3 3 0 01-3 3H7a3 3 0 01-3-3z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            )}
           </div>
           <div
             id="Profile"

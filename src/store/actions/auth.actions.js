@@ -12,8 +12,16 @@ import {
     UPDATE_SHOW_CONTEFFI,
     UPDATE_AWARD_AMOUNT,
     UPDATE_REFERRAL_COUNTS,
-    UPDATE_CURRENT_DEPOSITED
+    UPDATE_CURRENT_DEPOSITED,
+    UPDATE_REMAINED_DOWNCOUNT
 } from "./action.types"
+
+export const updateRemainedDownCount = count => dispatch => {
+    dispatch({
+        type: UPDATE_REMAINED_DOWNCOUNT,
+        payload: count
+    })
+}
 
 export const authSet = (payload) => dispatch => {
     dispatch({
