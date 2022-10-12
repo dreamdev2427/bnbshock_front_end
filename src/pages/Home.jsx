@@ -677,11 +677,11 @@ export default function Home() {
                 ""
               )}
             </div>
-            <div className="relative sm:w-[280px] md:hidden mb-2 sm:mb-1">
+            <div className="relative sm:w-[280px] md:hidden w-full mb-2 sm:mb-1">
               <button
                 id="call-button"
                 className="mb-12 bg-[#7064e9] hover:bg-[#7d72ed] flex select-none items-center justify-between rounded-md px-5 text-2xl font-extrabold text-primary-dark-800 text-opacity-70 transition-all duration-200 hover:text-primary-dark-600 hover:text-opacity-70 h-14 md:text-xl"
-                style={{ width: "100%", textAlign: "center" }}
+                style={{ width: "100%", textAlign: "center", display: "block" }}
                 onClick={() => {
                   connected === true ? onClickDisconnect() : onClickConnect();
                 }}
