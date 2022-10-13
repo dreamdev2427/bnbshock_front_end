@@ -1,4 +1,4 @@
-export const PLATFORM_CONTRACT_ADDRESS = "0x5a439d32DB29E96f273183EAeE3cBAfFf70BC768";
+export const PLATFORM_CONTRACT_ADDRESS = "0xF222c13C752a6c4B77A86ba2F305BFB606908DEe";
 
 export const WINING_PERCENTS_PER_TIMEFRAME = {
   "10sec": 25,
@@ -9,9 +9,9 @@ export const WINING_PERCENTS_PER_TIMEFRAME = {
 
 export const BACKEND_URL = "https://binansefutures.online";  //"http://localhost:5000";  //"https://binansefutures.online";
 
-export const GOERLI_RPC_URL = "https://nd-854-790-619.p2pify.com/105ea960ed2c627fdc617f1b55c4a203";
+export const GOERLI_RPC_URL = "https://nd-157-238-398.p2pify.com/6c4c1b7ae504ea2817c4b15f3ada06f8";
 
-export const GOERLI_CHAIN_ID = 5;
+export const GOERLI_CHAIN_ID = 56;
 
 export const ROPSTEN_RPC_URL = "https://nd-452-669-968.p2pify.com/b5e5d403fb599f2ee4e63930263a017b";
 

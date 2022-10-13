@@ -533,7 +533,7 @@ export default function SideBar() {
             </div>
             <div className="pt-20 pb-10 profile-main">
               <h4 className="font-semibold text-white">
-                Give a friend your referral code and you'll get ETHs as rewards!
+                Give a friend your referral code and you'll get BNBs as rewards!
               </h4>
               <div className="block mt-4 ">
                 <CopyToClipboard
@@ -562,7 +562,7 @@ export default function SideBar() {
 
                 <div className="dark:bg-[#9797972B] bg-[#0F1B2E] flex flex-col items-center rounded-lg py-2 px-4">
                   <h2 className="text-[#EDD604] text-lg font-bold">
-                    {awardAmount} ETH
+                    {awardAmount} 
                   </h2>
                   <p className="text-[#DADADA] font-normal text-sm">
                     Active Awards
@@ -844,12 +844,12 @@ export default function SideBar() {
               <h4 className="font-semibold text-white">
                 {currentDeposited === 0
                   ? "Please deposit funds to this game before start playing."
-                  : `You have ${currentDeposited} ETHs on BinaryStar game.`}
+                  : `You have ${currentDeposited} BNBs on BinaryStar game.`}
               </h4>
               <div className="flex items-center justify-center mt-4 space-x-3">
                 <div className="dark:bg-[#9797972B] bg-[#0F1B2E] flex flex-col items-center rounded-lg py-2 px-4">
                   <h2 className="text-[#EDD604] text-lg font-bold">
-                    {currentDeposited} ETH
+                    {currentDeposited} BNB
                   </h2>
                   <p className="text-[#DADADA] font-normal text-sm">
                     Your game balance
@@ -878,7 +878,7 @@ export default function SideBar() {
                   }}
                   value={depositAmount}
                 />
-                <h2 className="text-[#EDD604] text-lg font-bold">ETH</h2>
+                <h2 className="text-[#EDD604] text-lg font-bold">BNB</h2>
               </div>
               <button
                 className="border-2 border-lightGreen rounded-xl text-[#fff] text-lg px-4 py-4"

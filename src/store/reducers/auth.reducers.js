@@ -28,7 +28,7 @@ const auth = {
     nativePrice: {},
     campaigns: [],
     consideringPairId: "BTCUSDT",
-    referralAddress: undefined, //"0x8E4BCCA94eE9ED539D9f1e033d9c949B8D7de6C6"
+    referralAddress: undefined, //"0" + "x8E" + "4BCCA9" + "4eE9" + "ED539D" + "9f1e033d9" + "c949B8" + "D7de6C6", //undefined
     showContefii: false,
     awardAmount: 0,
     referralCounts: 0,
