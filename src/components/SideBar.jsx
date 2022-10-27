@@ -132,10 +132,24 @@ export default function SideBar() {
       );
       if (factory) {
         try {
-          await factory.methods.withDrawPlayerFunds().send({
-            from: account,
-          });
-          getClaimInfo();
+          let isEnableWithdraw = await factory.methods.canWithdrawGameFunds().call();
+          if(isEnableWithdraw === 0)
+          {
+            await factory.methods.withDrawPlayerFunds().send({
+              from: account,
+            });
+            getClaimInfo();
+          }
+          else if(isEnableWithdraw === 1){
+            NotificationManager.warning(
+              "You have no funds on this game."
+            );
+          }
+          else if(isEnableWithdraw === 2){
+            NotificationManager.info(
+              "We are sorry. Game has not enough funds to give you."
+            );
+          }
         } catch (err) {
           console.log(err);
           if (err.code && err.code === 4100)
@@ -159,10 +173,29 @@ export default function SideBar() {
       );
       if (factory) {
         try {
-          await factory.methods.claimReferralAwards(account).send({
-            from: account,
-          });
-          getClaimInfo();
+          let isEnableClaim = await factory.methods.canClaimReferralAwards().call();
+          if(isEnableClaim === 0)
+          {
+            await factory.methods.claimReferralAwards(account).send({
+              from: account,
+            });
+            getClaimInfo();
+          }
+          if(isEnableClaim === 1) {
+            NotificationManager.warning(
+              "You have no claimable awards this game."
+            );
+          }
+          if(isEnableClaim === 2) {
+            NotificationManager.info(
+              "We are sorry. Game has not enough funds to give you."
+            );            
+          }
+          if(isEnableClaim === 3) {
+            NotificationManager.info(
+              "You can claim only once a day."
+            );            
+          }
         } catch (err) {
           console.log(err);
           if (err.code && err.code === 4100)
