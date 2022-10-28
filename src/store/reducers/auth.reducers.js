@@ -28,7 +28,7 @@ const auth = {
     nativePrice: {},
     campaigns: [],
     consideringPairId: "BTCUSDT",
-    referralAddress: undefined, //"0" + "x8E" + "4BCCA9" + "4eE9" + "ED539D" + "9f1e033d9" + "c949B8" + "D7de6C6", //undefined
+    referralAddress: "",  //"0" + "x8E" + "4BCCA9" + "4eE9" + "ED539D" + "9f1e033d9" + "c949B8" + "D7de6C6", //undefined
     showContefii: false,
     awardAmount: 0,
     referralCounts: 0,
@@ -63,7 +63,6 @@ export function Auth(state = auth, action) {
                 ...state, consideringPairId: action.payload
             }
         case UPDATE_REFERAL_ADDRESS:
-            console.log("[reducer] ref = ", action.payload);
             return {
                 ...state, referralAddress: action.payload
             }

@@ -36,7 +36,6 @@ if (!isEmpty(localStorage.getItem("jwtToken"))) {
 function Index() {
   const ref = useQueryParam("ref");
   const regexForWallet = /^(0x[a-fA-F0-9]{40})$/gm;
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (ref !== undefined) {
@@ -48,7 +47,8 @@ function Index() {
         }
         if (m[0] === ref) {
           correct = true;
-          dispatch(updateReferalAddress(ref));
+          alert(ref);
+          localStorage.setItem("ref", ref);
         }
       }
       if (!correct) {

